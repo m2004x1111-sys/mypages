@@ -612,7 +612,11 @@ export default function Editor({ ogEndpoint = '/api/editor/og', colophon = [] }:
       </div>
       <footer className="editor-status">
         <span>{draft.source.length.toLocaleString()} 字符</span>
-        <a href="/post/note/shoka-features" target="_blank" rel="noreferrer">
+        <a
+          href="https://github.com/cosZone/astro-koharu/blob/main/src/content/blog/tools/astro-koharu-guide.md"
+          target="_blank"
+          rel="noreferrer"
+        >
           Shoka 语法演示
           <EditorIcon name="external" />
         </a>

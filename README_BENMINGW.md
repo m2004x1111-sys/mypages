@@ -70,3 +70,5 @@ pnpm preview --host 127.0.0.1
 设计参考：https://yuki-bloom.vercel.app/
 
 本站源码下载由 `pnpm build` 自动生成，位置为 `dist/source.tar.gz`，不包含依赖、构建缓存、本机配置与环境变量。
+
+如果从下载的源码包开始使用，在解压后的项目根目录先运行 `git init`，再运行 `pnpm install` 和 `pnpm build`。本项目用 Git 文件清单生成源码下载包；从站点仓库克隆的项目无需重复初始化。
