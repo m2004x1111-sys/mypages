@@ -2,6 +2,18 @@
 
 基于 Astro Koharu 的个人博客。主题采用 AGPL-3.0，许可证与原作者署名已保留。
 
+当前网站围绕「旅行记录、图片收藏、喜欢的作品」制作，暂时使用标明为示例的内容。网站已公开访问，当前未绑定自有域名；可先完成网页，之后再绑定域名。
+
+## 三个内容页面
+
+- `/travel`：旅行手记。读取文章中的「旅行」分类，真实旅行文章也放在 `src/content/blog/`，分类设为 `categories: [旅行]` 即可。
+- `/gallery`：相册，支持类型筛选、图片放大、左右切换和 Esc 关闭。清单在 `src/data/collections.ts` 的 `galleryImages` 中，每项包含标题、分类、图片路径、备注和来源。
+- `/favorites`：作品收藏页。当前三张卡片为示例占位，数据在同一文件的 `favoriteExamples` 中，可以替换作品名、封面与喜欢的原因。布局在 `src/components/collections/FavoriteShelf.astro`。
+
+首页的三个入口也在 `src/data/collections.ts` 中配置。首页布局为 `src/pages/index.astro`，独立页面布局为 `src/components/collections/CollectionPage.astro`。
+
+风景示例照片下载自 Unsplash，并在页面保留来源链接；动漫插画为原主题示例素材。自己的照片可以放在 `public/img/` 并替换对应路径。当前示例旅行和作品占位均不代表本人实际经历或真实收藏。
+
 ## 本机预览
 
 在当前项目目录打开终端，运行：
@@ -23,7 +35,7 @@ pnpm dev --host 127.0.0.1
 
 ## 写文章
 
-所有文章在 `src/content/blog/`。当前五篇均为示例，已标注「示例文章」。原主题的教学文章保存在 `docs/theme-examples/blog/`，不会发布到博客中。
+所有文章在 `src/content/blog/`。当前五篇均为示例，已标注「示例文章」；两篇归于「旅行」，两篇归于「收藏」，一篇介绍小窝。原主题教学文章保存在 `docs/theme-examples/blog/`，不会发布到博客中。
 
 创建一个 Markdown 文件，例如 `src/content/blog/life/my-first-post.md`：
 

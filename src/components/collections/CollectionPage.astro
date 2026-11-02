@@ -1,0 +1,40 @@
+---
+import HomeSider from '@components/layout/HomeSider.astro';
+import Cover from '@components/ui/cover/Cover.astro';
+import { siteConfig } from '@constants/site-config';
+import Layout from '@layouts/Layout.astro';
+import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
+import { defaultLocale } from '@/i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  english: string;
+  locale?: string;
+}
+const { title, description, english, locale = defaultLocale } = Astro.props;
+---
+
+<Layout locale={locale} title={`${title} | ${siteConfig.title}`} description={description} articleTools={false}>
+  <TwoColumnLayout>
+    <Cover slot="cover" title={title} compact />
+    <HomeSider slot="sider" />
+    <section class="collection-page" aria-label={title} data-pagefind-body>
+      <header class="collection-heading">
+        <p class="collection-eyebrow">{english}</p>
+        <h2>{title}</h2>
+        <p>{description}</p>
+      </header>
+      <slot />
+    </section>
+  </TwoColumnLayout>
+</Layout>
+
+<style>
+  .collection-page { min-width: 0; padding: 32px 36px 48px; background: hsl(var(--card) / .84); border-radius: 18px; box-shadow: 0 8px 35px hsl(var(--primary) / .035); }
+  .collection-heading { margin-bottom: 28px; }
+  .collection-eyebrow { color: hsl(var(--primary)); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+  .collection-heading h2 { margin: 8px 0 10px; font-size: 25px; font-weight: 650; letter-spacing: .08em; }
+  .collection-heading > p:last-child { color: hsl(var(--muted-foreground)); font-size: 14px; line-height: 1.9; }
+  @media (max-width: 600px) { .collection-page { padding: 26px 20px 36px; border-radius: 0; } }
+</style>

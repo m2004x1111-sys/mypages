@@ -1,0 +1,10 @@
+---
+import { getLocaleStaticPaths } from '../_shared/utils';
+import FavoritesPage from '../favorites.astro';
+export const getStaticPaths = getLocaleStaticPaths;
+interface Props {
+  locale: string;
+}
+const { locale } = Astro.props;
+---
+<FavoritesPage locale={locale} />

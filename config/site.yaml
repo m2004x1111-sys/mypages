@@ -2,17 +2,22 @@
 site:
   title: benmingw の小窝
   alternate: benmingw
-  subtitle: 把平凡的日子，写成自己的故事
+  subtitle: 把沿途的风景，和喜欢的故事收藏起来
   name: benmingw
   author: benmingw
-  description: 这里是 benmingw 的个人博客，收集生活里的小美好，记录学习与成长。
+  description: 记录旅行，收藏图片，留下喜欢的作品。这里是 benmingw 的个人小窝。
   avatar: /img/benmingw-avatar.svg
   showLogo: false
   url: https://benmingw-blog.dainty-hinny-5476.chatgpt.site
   defaultOgImage: /img/site_header_1200.webp
   startYear: 2026
   timezone: Asia/Shanghai
-  keywords: [benmingw, 个人博客, 学习笔记, 生活记录]
+  keywords:
+    - benmingw
+    - 个人博客
+    - 旅行记录
+    - 图片收藏
+    - 喜欢的作品
 
 i18n:
   defaultLocale: zh
@@ -22,27 +27,23 @@ i18n:
 
 categoryMap:
   随笔: life
-  笔记: note
-  灵感: inspiration
+  旅行: travel
+  收藏: collection
   周刊: weekly
 
 featuredCategories:
+  - link: travel
+    label: 旅行记录
+    image: /img/travel/coast.webp
+    description: 沿途的风景与旅行手记
+  - link: collection
+    label: 喜欢的收藏
+    image: /img/cover/21.webp
+    description: 图片、作品与想留下的心情
   - link: life
-    label: 生活随笔
-    image: /img/cover/2.webp
-    description: 收集日常中值得记住的片刻
-  - link: note
-    label: 学习笔记
-    image: /img/cover/4.webp
-    description: 慢慢学习，一点一点积累
-  - link: inspiration
-    label: 灵感收藏
-    image: /img/cover/1.webp
-    description: 为喜欢的事物留一处角落
-  - link: weekly
-    label: 每周手记
-    image: /img/weekly_header.webp
-    description: 给一周的生活留一个书签
+    label: 小窝随笔
+    image: /img/cover/16.webp
+    description: 关于这个小窝的点滴
 
 featuredSeries:
   - slug: weekly
@@ -53,7 +54,7 @@ featuredSeries:
       不急着把生活过成标准答案。
       在这里，留下一周的发现、思考和小小的进步。
     cover: /img/weekly_header.webp
-    enabled: true
+    enabled: false
     icon: ri:newspaper-line
     links:
       rss: /rss.xml
@@ -116,7 +117,7 @@ colophon:
   groups:
     notice:
       label: 阅读提示
-      placement: [meta, banner, card]
+      placement: [ meta, banner, card ]
   marks:
     example:
       group: notice
@@ -127,16 +128,22 @@ colophon:
 postActions:
   copyMarkdown: true
   downloadMarkdown: true
-  openInEditor: everyone
+  openInEditor: dev
 
 navigation:
   - name: 首页
     nameKey: nav.home
     path: /
     icon: ri:home-heart-fill
-  - name: 每周手记
-    path: /weekly
-    icon: ri:newspaper-line
+  - name: 旅行记录
+    path: /travel
+    icon: ri:compass-3-line
+  - name: 图片收藏
+    path: /gallery
+    icon: ri:image-line
+  - name: 喜欢的作品
+    path: /favorites
+    icon: ri:bookmark-3-line
   - name: 文章
     nameKey: nav.posts
     icon: ri:quill-pen-ai-fill
@@ -153,18 +160,10 @@ navigation:
         nameKey: nav.archives
         path: /archives
         icon: ri:archive-2-fill
-  - name: 友链
-    nameKey: nav.friends
-    path: /friends
-    icon: ri:links-line
   - name: 关于
     nameKey: nav.about
     path: /about
     icon: fa6-regular:circle-user
-  - name: 写作室
-    path: /editor
-    localeIndependent: true
-    icon: ri:edit-box-line
 
 comment:
   provider: none

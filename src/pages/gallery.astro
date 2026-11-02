@@ -1,0 +1,12 @@
+---
+import CollectionPage from '@components/collections/CollectionPage.astro';
+import GalleryGrid from '@components/collections/GalleryGrid.astro';
+
+interface Props {
+  locale?: string;
+}
+const { locale } = Astro.props;
+---
+<CollectionPage title="图片收藏" english="Little moments, kept forever" description="有些画面，只看一眼就想好好收藏。" locale={locale}>
+  <GalleryGrid />
+</CollectionPage>

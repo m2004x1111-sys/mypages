@@ -1,0 +1,12 @@
+---
+import CollectionPage from '@components/collections/CollectionPage.astro';
+import FavoriteShelf from '@components/collections/FavoriteShelf.astro';
+
+interface Props {
+  locale?: string;
+}
+const { locale } = Astro.props;
+---
+<CollectionPage title="喜欢的作品" english="Stories that stay with me" description="那些喜欢的故事，以及想留下来的心情。" locale={locale}>
+  <FavoriteShelf />
+</CollectionPage>
