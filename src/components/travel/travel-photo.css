@@ -1,0 +1,89 @@
+.map-photo-dialog {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  width: min(1050px, 94vw);
+  max-width: 94vw;
+  max-height: 94svh;
+  color: white;
+  background: transparent;
+}
+.map-photo-dialog::backdrop {
+  background: #171522ed;
+  backdrop-filter: blur(10px);
+}
+.map-photo-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  color: #ffffffb3;
+  font-size: 12px;
+}
+.map-photo-top button {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 19px;
+}
+.map-photo-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.map-photo-stage img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 70svh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.map-photo-stage button {
+  position: absolute;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ffffff40;
+  border-radius: 50%;
+  color: white;
+  background: #1c192b88;
+  font-size: 28px;
+  cursor: pointer;
+}
+.map-photo-stage button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+[data-photo-previous] {
+  left: 10px;
+}
+[data-photo-next] {
+  right: 10px;
+}
+.map-photo-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+}
+.map-photo-caption h3 {
+  font-size: 15px;
+  font-weight: 500;
+}
+.map-photo-caption p,
+.map-photo-caption a {
+  margin-top: 6px;
+  color: #ffffffa6;
+  font-size: 10px;
+  line-height: 1.8;
+}
+.map-photo-caption a {
+  flex-shrink: 0;
+}
+body:has(.map-photo-dialog[open]) {
+  overflow: hidden;
+}

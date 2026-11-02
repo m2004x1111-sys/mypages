@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import CollectionPage from '@components/collections/CollectionPage.astro';
 import PostList from '@components/post/PostList.astro';
+import TravelExplorer from '@components/travel/TravelExplorer.astro';
 import { toPostCardDataList } from '@lib/content/transforms';
 import { defaultLocale } from '@/i18n';
 
@@ -15,9 +16,11 @@ const entries = (
 const posts = toPostCardDataList(entries, locale);
 ---
 <CollectionPage title="旅行记录" english="Somewhere, along the way" description="不赶路的时候，风景才慢慢走进心里。" locale={locale}>
-  <aside class="travel-note"><span aria-hidden="true">✧</span><p>旅行记录还在准备中。下面是两篇排版示例，风景图片不是 benmingw 的实拍或到访记录。</p></aside>
-  <PostList posts={posts} showPaginator={false} />
-  <p class="travel-end">下一段旅程，留在下一页。</p>
+  <TravelExplorer>
+    <aside class="travel-note"><span aria-hidden="true">✧</span><p>旅行记录还在准备中。下面是两篇排版示例，风景图片不是 benmingw 的实拍或到访记录。</p></aside>
+    <PostList posts={posts} showPaginator={false} />
+    <p class="travel-end">下一段旅程，留在下一页。</p>
+  </TravelExplorer>
 </CollectionPage>
 <style>
   .travel-note { display: flex; align-items: center; gap: 12px; padding: 15px 18px; margin-bottom: 27px; border-radius: 12px; background: hsl(var(--primary) / .05); border: 1px dashed hsl(var(--primary) / .2); color: hsl(var(--muted-foreground)); font-size: 12px; line-height: 1.9; }

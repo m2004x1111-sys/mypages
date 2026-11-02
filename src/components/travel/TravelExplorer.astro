@@ -1,0 +1,55 @@
+---
+import { Icon } from 'astro-icon/components';
+import { travelLocations, travelMapTiles } from '@/data/travel-locations';
+import './travel-map.css';
+
+const countries = [...new Set(travelLocations.map((location) => location.country))];
+const mapData = JSON.stringify({ locations: travelLocations, tiles: travelMapTiles }).replaceAll('<', '\\u003c');
+---
+
+<section class="travel-explorer" data-travel-explorer>
+  <div class="travel-view-bar">
+    <div class="travel-view-tabs" role="tablist" aria-label="旅行浏览方式">
+      <button type="button" role="tab" id="travel-list-tab" aria-controls="travel-list-panel" aria-selected="true" data-travel-view="list"><Icon name="ri:article-line" />默认列表</button>
+      <button type="button" role="tab" id="travel-map-tab" aria-controls="travel-map-panel" aria-selected="false" tabindex="-1" data-travel-view="map"><Icon name="ri:map-2-line" />地图浏览</button>
+    </div>
+    <span class="travel-view-caption">同一段旅程，两种打开方式</span>
+  </div>
+  <div id="travel-list-panel" role="tabpanel" aria-labelledby="travel-list-tab" data-travel-panel="list"><slot /></div>
+  <div id="travel-map-panel" role="tabpanel" aria-labelledby="travel-map-tab" data-travel-panel="map" hidden>
+    <div class="travel-map-frame" data-travel-map>
+      <div class="travel-map-toolbar">
+        <label class="travel-search"><Icon name="ri:search-line" /><input type="search" data-map-search placeholder="搜索地点、地区或照片…" aria-label="搜索旅行地点或照片" /></label>
+        <label class="travel-country"><span class="sr-only">筛选地区</span><select data-map-country aria-label="筛选地区"><option value="">全部地区</option>{countries.map((country) => <option value={country}>{country}</option>)}</select></label>
+        <button type="button" class="map-overview" data-map-overview><Icon name="ri:focus-3-line" />查看全部</button>
+      </div>
+      <div class="travel-map-workspace">
+        <div class="travel-map-surface">
+          <div class="travel-map-canvas" data-map-canvas role="region" aria-label="可拖动缩放的旅行照片地图"></div>
+          <p class="travel-map-loading" data-map-loading>正在打开旅行地图…</p>
+          <p class="travel-map-status" data-map-status aria-live="polite">点击地图标记，看看那里的照片。</p>
+        </div>
+        <aside class="travel-map-sidebar" aria-label="地点与照片">
+          <div class="map-results-heading"><span>地点相册</span><span data-map-count>{travelLocations.length} 个地点</span></div>
+          <div class="map-place-list" data-map-places></div>
+          <p class="map-no-results" data-map-empty hidden>还没有匹配的地点，试试其他关键词或地区。</p>
+          <div class="map-place-detail" data-map-detail hidden></div>
+        </aside>
+      </div>
+      <p class="map-example-note"><Icon name="ri:information-line" />目前用两处示例地区展示效果，坐标不是精确拍摄点，也不代表 benmingw 的真实足迹。</p>
+      <dialog class="map-photo-dialog" aria-labelledby="map-photo-title" data-map-dialog>
+        <div class="map-photo-top"><span data-photo-counter></span><button type="button" data-photo-close aria-label="关闭旅行照片">✕</button></div>
+        <div class="map-photo-stage"><button type="button" data-photo-previous aria-label="上一张旅行照片">‹</button><img data-photo-image alt="" width="1200" height="800" /><button type="button" data-photo-next aria-label="下一张旅行照片">›</button></div>
+        <div class="map-photo-caption"><div><h3 id="map-photo-title"></h3><p data-photo-note></p></div><a data-photo-source target="_blank" rel="noopener noreferrer">素材来源 ↗</a></div>
+      </dialog>
+    </div>
+    <script is:inline type="application/json" data-travel-map-data set:html={mapData} />
+  </div>
+  <noscript><p class="map-example-note">地图浏览需要 JavaScript，下方默认列表仍可正常阅读。</p></noscript>
+</section>
+
+<script>
+  import { initTravelExplorer } from './travel-explorer';
+  if (document.readyState !== 'loading') initTravelExplorer();
+  document.addEventListener('astro:page-load', initTravelExplorer);
+</script>

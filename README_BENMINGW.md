@@ -12,6 +12,37 @@
 
 首页的三个入口也在 `src/data/collections.ts` 中配置。首页布局为 `src/pages/index.astro`，独立页面布局为 `src/components/collections/CollectionPage.astro`。
 
+## 旅行的两种浏览方式
+
+旅行页保留「默认列表」，另有「地图浏览」。地图支持拖动、缩放、地区筛选、地点或照片搜索、点标记查看相册，以及放大照片。默认列表不加载地图脚本或底图。
+
+地图地址可分享，例如 `/travel?view=map`；选定地区、关键词或地点后，地址也会保存相应状态。切回默认列表仍保留原有文章阅读方式。
+
+地图数据在 `src/data/travel-locations.ts`。当前两处均为演示地区，不是 benmingw 的真实旅行足迹，坐标也不表示摄影素材的准确拍摄点。
+
+添加自己的地点：将照片放入 `public/img/travel/`，再在 `travelLocations` 数组中加入类似下面的对象。坐标为 WGS84，顺序是「纬度、经度」，同一地点可以添加多张照片。
+
+```typescript
+{
+  id: 'my-first-trip',
+  title: '我的第一段旅程',
+  country: '日本',
+  region: '东京',
+  coordinates: [35.69, 139.7], // 仅为填写格式示例
+  description: '在这里写这段旅行的感受。',
+  articleHref: '/post/my-first-post', // 可选，需指向已发布文章
+  photos: [
+    { title: '街角的一张照片', image: '/img/travel/my-photo.webp', note: '照片说明' },
+  ],
+}
+```
+
+真实记录不必设置 `example: true`。删除所有示例地点后，数组也可以留空；页面会显示空状态。地区选项来自地点的 `country` 字段，搜索还会匹配 `region`、地点名与照片标题。
+
+底图使用 Leaflet 与 OpenStreetMap，保留地图署名，按当前视野请求瓦片，不提供离线批量下载。网络无法加载底图时，仍可通过地点清单查看照片；也可以切回默认列表。底图服务配置在同一数据文件的 `travelMapTiles` 中。
+
+地图筛选和数据验证测试命令：`pnpm test:travel`。
+
 风景示例照片下载自 Unsplash，并在页面保留来源链接；动漫插画为原主题示例素材。自己的照片可以放在 `public/img/` 并替换对应路径。当前示例旅行和作品占位均不代表本人实际经历或真实收藏。
 
 ## 本机预览
