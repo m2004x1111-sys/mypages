@@ -37,3 +37,7 @@ pnpm-debug.log*
 
 # Backup files
 backups/
+
+# Local Sites tooling and generated source offer
+.sites-runtime/
+public/source.tar.gz
