@@ -126,6 +126,6 @@ pnpm preview --host 127.0.0.1
 
 设计参考：https://yuki-bloom.vercel.app/
 
-本站源码下载由 `pnpm build` 自动生成，位置为 `dist/source.tar.gz`，不包含依赖、构建缓存、本机配置与环境变量。
+完整源码与素材保存在 [GitHub 仓库](https://github.com/m2004x1111-sys/mypages)。可通过仓库的 **Code → Download ZIP** 下载，或使用 Git 克隆后运行 `pnpm install` 和 `pnpm build`。
 
-如果从下载的源码包开始使用，在解压后的项目根目录先运行 `git init`，再运行 `pnpm install` 和 `pnpm build`。本项目用 Git 文件清单生成源码下载包；从站点仓库克隆的项目无需重复初始化。
+构建产物不再附带 `source.tar.gz`，避免整站源码与素材重复打包后超过 EdgeOne Pages 的单文件 25 MiB 限制。EdgeOne Pages 的构建命令填写 `pnpm build`，输出目录填写 `dist`。
