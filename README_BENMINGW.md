@@ -108,6 +108,14 @@ pnpm preview --host 127.0.0.1
 
 首次 Sites 发布默认为仅本人可访问；需要对外开放时，再修改站点访问范围。
 
+### 阿里云 ESA Pages
+
+仓库根目录的 `esa.jsonc` 已配置安装命令、构建命令和静态资源目录。ESA 会优先使用该文件，修改后需部署 GitHub `main` 分支的最新提交。
+
+- 安装：`npx --yes pnpm@10.28.2 install --frozen-lockfile`，使用项目指定的 pnpm 版本和锁文件，避免 npm 重新解析出不同版本的依赖。
+- 构建：`npm run build`，构建脚本直接调用项目依赖，不要求环境全局安装 pnpm。
+- 静态资源目录：`dist`。未匹配的页面使用项目生成的 `404.html`。
+
 ## 素材与源码
 
 ### 全站音乐播放器

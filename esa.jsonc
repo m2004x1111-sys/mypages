@@ -1,0 +1,8 @@
+{
+  "installCommand": "npx --yes pnpm@10.28.2 install --frozen-lockfile",
+  "buildCommand": "npm run build",
+  "assets": {
+    "directory": "./dist",
+    "notFoundStrategy": "404Page"
+  }
+}
