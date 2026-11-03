@@ -638,6 +638,8 @@ export interface BgmAudioGroup {
 
 export interface BgmConfig {
   enabled?: boolean;
+  /** Attempt the first song on entry; browsers may require an initial user interaction. */
+  autoplay?: boolean;
   /** Meting API endpoint URL. Defaults to 'https://163.hyc.moe/' */
   metingApi?: string;
   audio?: BgmAudioGroup[];

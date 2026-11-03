@@ -406,6 +406,8 @@ export const uiStrings = {
   'audio.empty': '暂无曲目',
   'audio.listTab': '列表 {index}',
   'audio.closePanel': '关闭面板',
+  'audio.openPlaylist': '展开/收起音乐歌单',
+  'audio.playbackError': '暂时无法播放，请重试或切换下一首。',
 
   // ── Table of Contents ───────────────────────────────────────
   'toc.title': '文章目录',

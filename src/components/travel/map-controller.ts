@@ -90,7 +90,7 @@ export function createTravelMap(root: HTMLElement) {
       const disc = document.createElement('span');
       disc.className = 'travel-pin-disc';
       const image = document.createElement('img');
-      image.src = location.photos[0].image;
+      image.src = location.photos[0].thumbnail ?? location.photos[0].image;
       image.alt = '';
       const badge = document.createElement('b');
       badge.textContent = String(location.photos.length);

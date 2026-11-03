@@ -22,6 +22,7 @@ export function createPhotoDialog(root: HTMLElement) {
     count.textContent = `${index + 1} / ${location.photos.length}`;
     source.hidden = !photo.source;
     if (photo.source) source.href = photo.source;
+    source.textContent = photo.sourceLabel ?? '素材来源 ↗';
     previous.disabled = next.disabled = location.photos.length < 2;
   };
   const change = (step: number) => {

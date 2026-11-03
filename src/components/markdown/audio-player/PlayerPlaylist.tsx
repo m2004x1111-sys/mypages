@@ -55,7 +55,7 @@ export const PlayerPlaylist = memo(function PlayerPlaylist({
   usePlaybackProgress(timeStore, progressBgRef);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, globalIdx: number) => {
-    if (globalIdx === currentIndex) {
+    if (globalIdx === currentIndex && timeStore.getDuration() > 0 && e.detail > 0) {
       // Click on current track → seek by position percentage
       const rect = e.currentTarget.getBoundingClientRect();
       const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));

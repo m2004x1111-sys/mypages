@@ -408,6 +408,8 @@ export const uiStrings: UIStrings = {
   'audio.empty': 'No tracks',
   'audio.listTab': 'List {index}',
   'audio.closePanel': 'Close panel',
+  'audio.openPlaylist': 'Toggle music playlist',
+  'audio.playbackError': 'Unable to play. Please try again or choose another track.',
 
   // ── Table of Contents ───────────────────────────────────────
   'toc.title': 'Table of Contents',

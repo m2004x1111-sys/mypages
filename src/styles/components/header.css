@@ -206,6 +206,26 @@ html.theme-transition .header-content {
     rotate 420ms var(--ease-out-expo);
 }
 
+@media (width <= 480px) {
+  .header-actions {
+    gap: 0.125rem;
+  }
+
+  .header-actions > button {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .header-actions > button > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .header-actions .toggle {
+    scale: 0.65;
+  }
+}
+
 @media (hover: hover) {
   .site-logo:hover img {
     scale: 1.06;

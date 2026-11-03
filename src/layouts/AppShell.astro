@@ -34,9 +34,9 @@ const { post, siderType, isPostPage, articleTools = true } = Astro.props;
   <main class="relative flex grow flex-col gap-4">
     {(<slot />)}
   </main>
-  {bgmConfig.enabled && bgmConfig.audio.length > 0 && (
+  {bgmConfig.enabled && (bgmConfig.audio.length > 0 || bgmConfig.tracks.length > 0) && (
     <div transition:persist="global-bgm">
-      <GlobalBGMPlayer client:panel="bgm" audioGroups={bgmConfig.audio} metingApi={bgmConfig.metingApi} />
+      <GlobalBGMPlayer client:load autoplay={bgmConfig.autoplay} localTracks={bgmConfig.tracks} audioGroups={bgmConfig.audio} metingApi={bgmConfig.metingApi} />
     </div>
   )}
   <FloatingGroup client:only="react" />

@@ -1,10 +1,28 @@
 ---
+import { getPhotoAssets } from '@lib/photo-assets';
 import { Icon } from 'astro-icon/components';
 import { travelLocations, travelMapTiles } from '@/data/travel-locations';
 import './travel-map.css';
 
 const countries = [...new Set(travelLocations.map((location) => location.country))];
-const mapData = JSON.stringify({ locations: travelLocations, tiles: travelMapTiles }).replaceAll('<', '\\u003c');
+const locations = await Promise.all(
+  travelLocations.map(async (location) => ({
+    ...location,
+    photos: await Promise.all(
+      location.photos.map(async (photo) => {
+        const assets = await getPhotoAssets(photo.image);
+        return {
+          ...photo,
+          image: assets.preview,
+          thumbnail: assets.thumbnail,
+          source: photo.source ?? photo.image,
+          sourceLabel: photo.sourceLabel ?? (photo.source ? '素材来源 ↗' : '查看原图 ↗'),
+        };
+      }),
+    ),
+  })),
+);
+const mapData = JSON.stringify({ locations, tiles: travelMapTiles }).replaceAll('<', '\\u003c');
 ---
 
 <section class="travel-explorer" data-travel-explorer>
@@ -13,7 +31,6 @@ const mapData = JSON.stringify({ locations: travelLocations, tiles: travelMapTil
       <button type="button" role="tab" id="travel-list-tab" aria-controls="travel-list-panel" aria-selected="true" data-travel-view="list"><Icon name="ri:article-line" />默认列表</button>
       <button type="button" role="tab" id="travel-map-tab" aria-controls="travel-map-panel" aria-selected="false" tabindex="-1" data-travel-view="map"><Icon name="ri:map-2-line" />地图浏览</button>
     </div>
-    <span class="travel-view-caption">同一段旅程，两种打开方式</span>
   </div>
   <div id="travel-list-panel" role="tabpanel" aria-labelledby="travel-list-tab" data-travel-panel="list"><slot /></div>
   <div id="travel-map-panel" role="tabpanel" aria-labelledby="travel-map-tab" data-travel-panel="map" hidden>
@@ -36,7 +53,7 @@ const mapData = JSON.stringify({ locations: travelLocations, tiles: travelMapTil
           <div class="map-place-detail" data-map-detail hidden></div>
         </aside>
       </div>
-      <p class="map-example-note"><Icon name="ri:information-line" />目前用两处示例地区展示效果，坐标不是精确拍摄点，也不代表 benmingw 的真实足迹。</p>
+      <p class="map-example-note"><Icon name="ri:information-line" />照片按东京旅行归档；地图使用城市级参考位置，具体拍摄点待补充。</p>
       <dialog class="map-photo-dialog" aria-labelledby="map-photo-title" data-map-dialog>
         <div class="map-photo-top"><span data-photo-counter></span><button type="button" data-photo-close aria-label="关闭旅行照片">✕</button></div>
         <div class="map-photo-stage"><button type="button" data-photo-previous aria-label="上一张旅行照片">‹</button><img data-photo-image alt="" width="1200" height="800" /><button type="button" data-photo-next aria-label="下一张旅行照片">›</button></div>

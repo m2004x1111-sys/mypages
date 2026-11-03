@@ -1,33 +1,36 @@
 ---
 import { Icon } from 'astro-icon/components';
 import { favoriteExamples } from '@/data/collections';
+
+const works = favoriteExamples.map((work) => ({ ...work, url: work.url?.trim() ?? '' }));
 ---
 
 <section aria-label="喜欢的作品" class="favorite-shelf">
-  <div class="shelf-note"><Icon name="ri:bookmark-3-line" /><p>正式收藏还在整理中。这里先留三个位置，展示作品卡片的样子。</p><span>排版示例</span></div>
   <div class="favorite-grid">
-    {favoriteExamples.map((work, index) => (
+    {works.map((work, index) => (
       <article class="favorite-card" style={`--shelf-accent: ${work.color}`}>
         <div class="work-art">
           <img src={work.image} alt="" width="800" height="500" loading="lazy" decoding="async" />
           <div class="work-art-shade"></div>
           <span class="work-number">0{index + 1} / {work.category}</span>
           <div class="work-cover-title"><Icon name={work.icon} /><span>{work.category}</span><small>{work.subtitle}</small></div>
-          <span class="work-example">示例占位</span>
         </div>
-        <div class="work-body"><span class="work-type">{work.category}札记</span><h3>{work.title}</h3><p>{work.note}</p>
-          <details><summary>翻开收藏札记 <span aria-hidden="true">＋</span></summary><p>这里还没有正式的收藏札记。等遇到喜欢的作品，就留下名字、封面，和喜欢它的理由。</p></details>
+        <div class="work-body"><span class="work-type">{work.category}备注</span><h3>{work.title}</h3><p>{work.note}</p>
+          {work.url ? (
+            <a class="work-link" href={work.url} target="_blank" rel="noopener noreferrer" aria-label={`前往阅读《${work.title}》（新标签页打开）`}>
+              前往阅读 <Icon name="ri:external-link-line" aria-hidden="true" />
+            </a>
+          ) : (
+            <span class="work-link is-pending">阅读链接待补充</span>
+          )}
         </div>
       </article>
     ))}
   </div>
-  <p class="shelf-footer">不急着填满书架，喜欢的故事会慢慢来到这里。</p>
+  <p class="shelf-footer">会有更多更多的书</p>
 </section>
 
 <style>
-  .shelf-note { display: flex; align-items: center; gap: 10px; padding: 14px 17px; margin-bottom: 25px; border: 1px dashed hsl(var(--primary) / .25); background: hsl(var(--primary) / .04); border-radius: 12px; font-size: 12px; color: hsl(var(--muted-foreground)); line-height: 1.8; }
-  .shelf-note svg { color: hsl(var(--primary)); width: 17px; flex-shrink: 0; }
-  .shelf-note span { margin-left: auto; color: hsl(var(--primary)); white-space: nowrap; font-size: 10px; }
   .favorite-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
   .favorite-card { border: 1px solid hsl(var(--border)); border-radius: 15px; overflow: hidden; background: hsl(var(--card)); }
   .work-art { position: relative; aspect-ratio: 3 / 4; background: var(--shelf-accent); overflow: hidden; color: white; }
@@ -38,17 +41,14 @@ import { favoriteExamples } from '@/data/collections';
   .work-cover-title svg { font-size: 28px; opacity: .9; }
   .work-cover-title span { font-size: 30px; letter-spacing: .3em; font-weight: 300; }
   .work-cover-title small { font-size: 8px; letter-spacing: .15em; line-height: 1.8; }
-  .work-example { position: absolute; right: 13px; bottom: 14px; font-size: 9px; border: 1px solid #fff6; border-radius: 4px; padding: 3px 6px; }
   .work-body { padding: 18px; }
   .work-type { font-size: 9px; color: hsl(var(--primary)); letter-spacing: .12em; }
   h3 { margin: 9px 0; font-size: 16px; line-height: 1.7; font-weight: 600; }
   .work-body > p { margin: 0; color: hsl(var(--muted-foreground)); font-size: 12px; line-height: 1.9; }
-  details { border-top: 1px solid hsl(var(--border)); margin-top: 18px; padding-top: 13px; }
-  summary { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: hsl(var(--primary)); cursor: pointer; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  summary:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 5px; }
-  details[open] summary span { transform: rotate(45deg); }
-  details p { margin-top: 12px; font-size: 11px; line-height: 1.9; color: hsl(var(--muted-foreground)); }
+  .work-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid hsl(var(--border)); margin-top: 18px; padding-top: 13px; font-size: 12px; color: hsl(var(--primary)); text-decoration: none; }
+  a.work-link:hover { color: hsl(var(--foreground)); }
+  a.work-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 5px; }
+  .work-link.is-pending { color: hsl(var(--muted-foreground)); }
   .shelf-footer { text-align: center; margin: 32px 0 2px; font-size: 12px; color: hsl(var(--muted-foreground)); letter-spacing: .08em; }
-  @media (max-width: 760px) { .favorite-grid { grid-template-columns: 1fr; gap: 18px; } .favorite-card { display: grid; grid-template-columns: 37% minmax(0, 1fr); } .work-art { min-height: 240px; aspect-ratio: auto; } .work-cover-title { inset: auto 14px 40px; } .work-cover-title span { font-size: 24px; } .work-body { padding: 18px 16px; } .shelf-note { align-items: flex-start; } .shelf-note span { display: none; } }
+  @media (max-width: 760px) { .favorite-grid { grid-template-columns: 1fr; gap: 18px; } .favorite-card { display: grid; grid-template-columns: 37% minmax(0, 1fr); } .work-art { min-height: 240px; aspect-ratio: auto; } .work-cover-title { inset: auto 14px 40px; } .work-cover-title span { font-size: 24px; } .work-body { padding: 18px 16px; } }
 </style>

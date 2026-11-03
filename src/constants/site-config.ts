@@ -28,7 +28,9 @@ import type {
   RouterItem,
   SocialConfig,
 } from '@lib/config/types';
+import { toLocalMusicTracks } from '@lib/local-music';
 import { createUmamiStatsConfig } from '@lib/umami-stats';
+import { musicTracks } from '@/data/music';
 import type { UmamiStatsConfig } from '@/types/umami-stats';
 import yamlConfig from '../../config/site.yaml';
 import { DEFAULT_ROUTERS, RESERVED_ROUTES } from './router';
@@ -48,7 +50,7 @@ export const icpConfig: { text: string; link?: string } | undefined = (() => {
 const { title, alternate, subtitle } = siteConfig;
 
 export const seoConfig = {
-  title: `${alternate ? `${alternate} = ` : ''}${title}${subtitle ? ` = ${subtitle}` : ''}`,
+  title: `benmingw`,
   description: siteConfig.description,
   keywords: siteConfig?.keywords?.join(',') ?? '',
   url: siteConfig.site,
@@ -100,10 +102,13 @@ export const christmasConfig: ChristmasConfig = yamlConfig.christmas || {
 };
 
 // Map YAML bgm config
-export const bgmConfig: { enabled: boolean; metingApi?: string; audio: BgmAudioGroup[] } = {
-  enabled: yamlConfig.bgm?.enabled ?? (yamlConfig.bgm?.audio?.length ?? 0) > 0,
+const localMusicTracks = toLocalMusicTracks(musicTracks);
+export const bgmConfig = {
+  autoplay: yamlConfig.bgm?.autoplay ?? false,
+  enabled: yamlConfig.bgm?.enabled ?? localMusicTracks.length + (yamlConfig.bgm?.audio?.length ?? 0) > 0,
   metingApi: yamlConfig.bgm?.metingApi,
-  audio: yamlConfig.bgm?.audio ?? [],
+  audio: (yamlConfig.bgm?.audio ?? []) as BgmAudioGroup[],
+  tracks: localMusicTracks,
 };
 
 // Bangumi media tracking config — null when disabled (section commented out in YAML)

@@ -10,7 +10,7 @@
 import { LazyMotionProvider } from '@components/common/LazyMotionProvider';
 import { preloadSettingsPanel } from '@components/settings/SettingsPanel';
 import { animation } from '@constants/design-tokens';
-import { bgmConfig, christmasConfig } from '@constants/site-config';
+import { christmasConfig } from '@constants/site-config';
 import { useIsMounted } from '@hooks/useIsMounted';
 import { useMotionLevel } from '@hooks/useMotionLevel';
 import { useTranslation } from '@hooks/useTranslation';
@@ -18,10 +18,9 @@ import { Icon } from '@iconify/react';
 import { getScrollBehavior } from '@lib/motion-level';
 import { cn } from '@lib/utils';
 import { useStore } from '@nanostores/react';
-import { $bgmPanelOpen, toggleBgmPanel } from '@store/bgm';
 import { christmasEnabled, disableChristmasCompletely, enableChristmas, initChristmasState } from '@store/christmas';
 import { $isDrawerOpen, $isSettingsOpen, toggleSettings } from '@store/modal';
-import { bgmWidgetEnabled, initSettings, scrollProgressEnabled } from '@store/settings';
+import { initSettings, scrollProgressEnabled } from '@store/settings';
 import { AnimatePresence, type MotionValue, m, useScroll, useSpring, type Variants } from 'motion/react';
 import { useEffect, useState } from 'react';
 
@@ -31,8 +30,6 @@ interface FloatingButtonProps {
   title: string;
   children: React.ReactNode;
   className?: string;
-  /** Optional data attribute for identifying BGM toggle button */
-  dataBgmToggle?: boolean;
   /** Optional data attribute for identifying settings toggle button */
   dataSettingsToggle?: boolean;
   /** Optional preload callback for controls that reveal lazy UI. */
@@ -84,7 +81,6 @@ function FloatingButton({
   title,
   children,
   className,
-  dataBgmToggle,
   dataSettingsToggle,
   onIntent,
   ariaExpanded,
@@ -108,7 +104,6 @@ function FloatingButton({
       aria-expanded={ariaExpanded}
       title={isMounted ? title : undefined}
       data-tooltip-interactive="false"
-      data-bgm-toggle={dataBgmToggle || undefined}
       data-settings-toggle={dataSettingsToggle || undefined}
     >
       {children}
@@ -150,9 +145,7 @@ export default function FloatingGroup() {
   const [isExpanded, setIsExpanded] = useState(() => !window.matchMedia('(max-width: 992px)').matches);
   const isDrawerOpen = useStore($isDrawerOpen);
   const isChristmasEnabled = useStore(christmasEnabled);
-  const isBgmPanelOpen = useStore($bgmPanelOpen);
   const isSettingsOpen = useStore($isSettingsOpen);
-  const isBgmWidgetEnabled = useStore(bgmWidgetEnabled);
   const showProgress = useStore(scrollProgressEnabled);
   const reduced = useMotionLevel() === 'reduced';
 
@@ -191,18 +184,6 @@ export default function FloatingGroup() {
                 <m.div variants={reduced ? staticVariants : itemVariants}>
                   <FloatingButton onClick={toggleChristmas} ariaLabel={t('floating.christmas')} title={t('floating.christmas')}>
                     <Icon icon={isChristmasEnabled ? 'ri:snowy-fill' : 'ri:snowy-line'} className="size-5" />
-                  </FloatingButton>
-                </m.div>
-              )}
-              {bgmConfig.enabled && bgmConfig.audio.length > 0 && isBgmWidgetEnabled && (
-                <m.div variants={reduced ? staticVariants : itemVariants}>
-                  <FloatingButton
-                    onClick={toggleBgmPanel}
-                    ariaLabel={t('floating.bgm')}
-                    title={t('floating.bgm')}
-                    dataBgmToggle
-                  >
-                    <Icon icon={isBgmPanelOpen ? 'ri:music-2-fill' : 'ri:music-2-line'} className="size-5" />
                   </FloatingButton>
                 </m.div>
               )}

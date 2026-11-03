@@ -1,9 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import CollectionPage from '@components/collections/CollectionPage.astro';
+import GalleryGrid from '@components/collections/GalleryGrid.astro';
 import PostList from '@components/post/PostList.astro';
 import TravelExplorer from '@components/travel/TravelExplorer.astro';
 import { toPostCardDataList } from '@lib/content/transforms';
+import { travelGalleryImages } from '@/data/collections';
 import { defaultLocale } from '@/i18n';
 
 interface Props {
@@ -15,15 +17,19 @@ const entries = (
 ).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const posts = toPostCardDataList(entries, locale);
 ---
-<CollectionPage title="旅行记录" english="Somewhere, along the way" description="不赶路的时候，风景才慢慢走进心里。" locale={locale}>
+<CollectionPage title="旅行日志" english="Somewhere, along the way" description="慢慢点亮地图ing~" locale={locale}>
   <TravelExplorer>
-    <aside class="travel-note"><span aria-hidden="true">✧</span><p>旅行记录还在准备中。下面是两篇排版示例，风景图片不是 benmingw 的实拍或到访记录。</p></aside>
+    <section id="travel-photos" aria-labelledby="travel-photos-title">
+      <h3 id="travel-photos-title" class="travel-section-title">东京0，1</h3>
+      <GalleryGrid images={travelGalleryImages} label="东京旅行照片" showFilters={false} description="***" />
+    </section>
+    <h3 class="travel-section-title travel-posts-title">旅行手记</h3>
     <PostList posts={posts} showPaginator={false} />
     <p class="travel-end">下一段旅程，留在下一页。</p>
   </TravelExplorer>
 </CollectionPage>
 <style>
-  .travel-note { display: flex; align-items: center; gap: 12px; padding: 15px 18px; margin-bottom: 27px; border-radius: 12px; background: hsl(var(--primary) / .05); border: 1px dashed hsl(var(--primary) / .2); color: hsl(var(--muted-foreground)); font-size: 12px; line-height: 1.9; }
-  .travel-note span { color: hsl(var(--primary)); font-size: 25px; }
+  .travel-section-title { margin: 0 0 18px; font-size: 18px; font-weight: 600; letter-spacing: .06em; }
+  .travel-posts-title { margin-top: 36px; }
   .travel-end { margin-top: 32px; color: hsl(var(--muted-foreground)); text-align: center; font-size: 12px; letter-spacing: .12em; }
 </style>

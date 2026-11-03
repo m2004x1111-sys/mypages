@@ -1,21 +1,18 @@
 ---
-title: 给喜欢的故事，留一格书架
+title: 推荐一本书
 link: weekly-001
 date: 2026-11-02 05:00:00
-description: 有些作品看完很久，仍然会想起其中的角色和片段。收藏清单还在整理，先为它们留一个位置。
-cover: /img/cover/16.webp
+description: 这是一本超好看的年龄差
+cover: /img/yuri/yuri9.webp
 categories: [收藏]
 tags: [作品, 收藏, 故事]
-colophon: [example]
+colophon: []
 catalog: true
 ---
 
-## 喜欢的故事，慢慢收藏
+##  JKXOL 不得不可以评鉴的一环
 
-一部动画、一部电影，或一本书。让人喜欢的原因，也许只是一句话、一个角色，或者一个难以忘记的片段。
+- 可以去阅读的连接：https://bbs.yamibo.com/forum.php?mod=viewthread&tid=555136&extra=&mobile=2
 
-[喜欢的作品](/favorites)会用来记录这些故事。
 
-## 不急着填满书架
 
-目前还没有整理好的作品名称，所以页面上的三张卡片只是排版占位，并不代表 benmingw 的真实收藏或评价。等之后有想放上来的作品，再留下名字、封面和喜欢的理由。

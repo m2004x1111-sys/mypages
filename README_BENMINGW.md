@@ -6,9 +6,11 @@
 
 ## 三个内容页面
 
-- `/travel`：旅行手记。读取文章中的「旅行」分类，真实旅行文章也放在 `src/content/blog/`，分类设为 `categories: [旅行]` 即可。
+- `/travel`：东京旅行相册与旅行手记。默认列表展示本次导入的 10 张照片，支持放大、方向键切换和查看原图；下方显示「旅行」分类文章。
 - `/gallery`：相册，支持类型筛选、图片放大、左右切换和 Esc 关闭。清单在 `src/data/collections.ts` 的 `galleryImages` 中，每项包含标题、分类、图片路径、备注和来源。
-- `/favorites`：作品收藏页。当前三张卡片为示例占位，数据在同一文件的 `favoriteExamples` 中，可以替换作品名、封面与喜欢的原因。布局在 `src/components/collections/FavoriteShelf.astro`。
+- `/favorites`：作品收藏页。数据在同一文件的 `favoriteExamples` 中，可以修改作品名、封面、简短介绍和书籍链接。布局在 `src/components/collections/FavoriteShelf.astro`。
+
+每部作品的 `url` 是阅读链接，例如 `url: 'https://example.com/book/123'`。填写完整网址后，卡片显示「前往阅读」，点击会在新标签页打开；留空或不填写时显示「阅读链接待补充」，不会生成空链接。新增作品时可以复制现有条目，修改对应字段。
 
 首页的三个入口也在 `src/data/collections.ts` 中配置。首页布局为 `src/pages/index.astro`，独立页面布局为 `src/components/collections/CollectionPage.astro`。
 
@@ -18,7 +20,9 @@
 
 地图地址可分享，例如 `/travel?view=map`；选定地区、关键词或地点后，地址也会保存相应状态。切回默认列表仍保留原有文章阅读方式。
 
-地图数据在 `src/data/travel-locations.ts`。当前两处均为演示地区，不是 benmingw 的真实旅行足迹，坐标也不表示摄影素材的准确拍摄点。
+这次导入的 10 张照片全部保留在 `public/img/travel/`，没有改名或覆盖。照片清单、标题与说明统一在 `src/data/travel-photos.ts` 中修改，旅行页、图片收藏和地图共用这份清单。网页生成 960 像素缩略图和 1800 像素浏览图，点击「查看原图」可打开原始文件。
+
+地图数据在 `src/data/travel-locations.ts`。当前按用户提供的「东京」归为一个相册。原图不含拍摄时间或 GPS，文件名中的日期不是拍摄日期；地图坐标为东京城市级参考点，不表示每张照片的准确拍摄位置。以后可以细分景点和修改坐标。
 
 添加自己的地点：将照片放入 `public/img/travel/`，再在 `travelLocations` 数组中加入类似下面的对象。坐标为 WGS84，顺序是「纬度、经度」，同一地点可以添加多张照片。
 
@@ -43,7 +47,7 @@
 
 地图筛选和数据验证测试命令：`pnpm test:travel`。
 
-风景示例照片下载自 Unsplash，并在页面保留来源链接；动漫插画为原主题示例素材。自己的照片可以放在 `public/img/` 并替换对应路径。当前示例旅行和作品占位均不代表本人实际经历或真实收藏。
+相册中的旅行图片来自本次导入的原图，动漫插画仍为主题示例素材。原来的两篇旅行示例已备份到 `docs/theme-examples/replaced-travel-posts/`，原文章地址保留并更新为东京旅行照片索引。
 
 ## 本机预览
 
@@ -66,7 +70,7 @@ pnpm dev --host 127.0.0.1
 
 ## 写文章
 
-所有文章在 `src/content/blog/`。当前五篇均为示例，已标注「示例文章」；两篇归于「旅行」，两篇归于「收藏」，一篇介绍小窝。原主题教学文章保存在 `docs/theme-examples/blog/`，不会发布到博客中。
+所有文章在 `src/content/blog/`，按文章开头的 `categories` 分类。文章不再展示示例提示条或摘要折叠框。原主题教学文章保存在 `docs/theme-examples/blog/`，不会发布到博客中。
 
 创建一个 Markdown 文件，例如 `src/content/blog/life/my-first-post.md`：
 
@@ -105,6 +109,16 @@ pnpm preview --host 127.0.0.1
 首次 Sites 发布默认为仅本人可访问；需要对外开放时，再修改站点访问范围。
 
 ## 素材与源码
+
+### 全站音乐播放器
+
+- 入口在右上角搜索按钮左边，点击音乐图标展开歌单和播放控制。
+- 音频文件放在 `public/music/`。现在的试播音频是 `public/music/12-13.mp3`。
+- 歌单统一修改 `src/data/music.ts`：`name` 是歌名，`url` 是音频地址；`artist`、`cover` 和 `lrc` 分别是歌手、封面和歌词，可留空。
+- 添加下一首：把文件放入 `public/music/`，再复制歌单里的一段 `{ ... }`，填写自己的名称和地址。例如 `public/music/song2.mp3` 对应 `url: '/music/song2.mp3'`。数组顺序就是播放顺序。
+- `cover` 可填写 `/music/song2.jpg`，`lrc` 可填写 `/music/song2.lrc`；`url: ''` 会隐藏该首歌。
+- 开关在 `config/site.yaml` 的 `bgm.enabled`；`bgm.autoplay: true` 会在进入或刷新页面时尝试播放第一首。浏览器拦截时，首次点击或按 Enter/空格后再播放。切换站内页面和收起面板不会中断；手动暂停后，不会因为后续点击自行恢复。
+- 开发模式下修改歌单后保存即可更新，线上需要重新构建和发布。
 
 默认二次元插画来自原主题示例素材。正式使用时可以换成自己的图片。
 

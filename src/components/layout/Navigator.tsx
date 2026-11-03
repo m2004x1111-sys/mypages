@@ -18,6 +18,7 @@ import { flushSync } from 'react-dom';
 import { defaultLocale, localizedPath, resolveNavName, stripLocaleFromPath } from '@/i18n';
 import DropdownNav from './DropdownNav';
 import LanguageSwitcher from './LanguageSwitcher';
+import { MusicTrigger } from './MusicTrigger';
 import { SearchTrigger } from './SearchTrigger';
 
 interface NavigatorProps {
@@ -191,7 +192,8 @@ const Navigator = memo(function Navigator({ currentPath, locale = defaultLocale 
         })}
       </nav>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="header-actions ml-auto flex items-center gap-2">
+        <MusicTrigger />
         <SearchTrigger />
         <div className="tablet:hidden flex-center">
           <LanguageSwitcher

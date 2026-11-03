@@ -1,15 +1,15 @@
 # benmingw 的个人博客配置。修改后重启开发服务器或重新构建。
 site:
-  title: benmingw の小窝
-  alternate: benmingw
-  subtitle: 把沿途的风景，和喜欢的故事收藏起来
+  title: ほんのいのちのページ
+  alternate: 本命内
+  subtitle: 百合に興味がなかったら、人生に何の意味があるの？
   name: benmingw
   author: benmingw
-  description: 记录旅行，收藏图片，留下喜欢的作品。这里是 benmingw 的个人小窝。
-  avatar: /img/benmingw-avatar.svg
+  description: 旅游，学习，翻译，百合！百合！还有百合！。
+  avatar: /img/benmingw.webp
   showLogo: false
   url: https://benmingw-blog.dainty-hinny-5476.chatgpt.site
-  defaultOgImage: /img/site_header_1200.webp
+  defaultOgImage: /img/xingyuan.webp
   startYear: 2026
   timezone: Asia/Shanghai
   keywords:
@@ -33,13 +33,13 @@ categoryMap:
 
 featuredCategories:
   - link: travel
-    label: 旅行记录
-    image: /img/travel/coast.webp
-    description: 沿途的风景与旅行手记
+    label: 旅游日志
+    image: /img/travel/微信图片_20261102182522_99_51.jpg
+    description: 记录好看的东西
   - link: collection
-    label: 喜欢的收藏
+    label: 插画集
     image: /img/cover/21.webp
-    description: 图片、作品与想留下的心情
+    description: 图片
   - link: life
     label: 小窝随笔
     image: /img/cover/16.webp
@@ -114,16 +114,8 @@ editor:
 colophon:
   enabled: true
   defaults: []
-  groups:
-    notice:
-      label: 阅读提示
-      placement: [ meta, banner, card ]
-  marks:
-    example:
-      group: notice
-      icon: ri:seedling-line
-      label: 示例文章
-      description: 这是用于展示博客效果的示例内容，可以替换成你自己的文字。
+  groups: {}
+  marks: {}
 
 postActions:
   copyMarkdown: true
@@ -135,7 +127,7 @@ navigation:
     nameKey: nav.home
     path: /
     icon: ri:home-heart-fill
-  - name: 旅行记录
+  - name: 旅行日志
     path: /travel
     icon: ri:compass-3-line
   - name: 图片收藏
@@ -173,7 +165,8 @@ analytics:
     enabled: false
 
 bgm:
-  enabled: false
+  enabled: true # 歌单在 src/data/music.ts，音频放在 public/music/
+  autoplay: true # 进入页面尝试播放第一首；浏览器拦截时，首次点击后播放
 
 christmas:
   enabled: false

@@ -36,10 +36,13 @@ function useLrcText(lrcSource: string | undefined): string {
       return;
     }
 
-    if (lrcSource.startsWith('http')) {
+    if (/^(?:https?:\/\/|\/)/.test(lrcSource)) {
       const controller = new AbortController();
       fetch(lrcSource, { signal: controller.signal })
-        .then((r) => r.text())
+        .then((r) => {
+          if (!r.ok) throw new Error('Lyrics unavailable');
+          return r.text();
+        })
         .then(setText)
         .catch((error: unknown) => {
           if (!(error instanceof DOMException && error.name === 'AbortError')) setText('');
@@ -109,9 +112,11 @@ export const PlayerPreview = memo(function PlayerPreview({
         <div className="audio-player-song-name" title={track?.name}>
           {track?.name || 'No track'}
         </div>
-        <div className="audio-player-artist" title={track?.artist}>
-          {track?.artist || ''}
-        </div>
+        {track?.artist && (
+          <div className="audio-player-artist" title={track.artist}>
+            {track.artist}
+          </div>
+        )}
 
         {/* Lyrics area — current line centered vertically */}
         {(reserveLyrics || lrcLines.length > 0) && (

@@ -67,10 +67,16 @@ export function useMediaPlayer<T>({ tracks, getUrl, getElement }: UseMediaPlayer
       const currentTracks = tracksRef.current;
       if (!el || !currentTracks[index]) return;
       el.src = getUrlRef.current(currentTracks[index]);
-      el.play().catch(() => {});
+      const source = el.src;
+      setState((s) => ({ ...s, currentIndex: index, loading: true, error: null }));
+      el.play().catch((error: unknown) => {
+        // Rapid track changes cancel the earlier play request; only report the active source.
+        if (el.src !== source || (error instanceof DOMException && error.name === 'AbortError')) return;
+        const message = error instanceof DOMException && error.name === 'NotAllowedError' ? null : 'Failed to play media';
+        setState((s) => ({ ...s, playing: false, loading: false, error: message }));
+      });
       $activePlayerId.set(playerId);
       timeStore.reset();
-      setState((s) => ({ ...s, currentIndex: index, loading: true, error: null }));
     },
     [playerId, timeStore],
   );
@@ -177,14 +183,18 @@ export function useMediaPlayer<T>({ tracks, getUrl, getElement }: UseMediaPlayer
       const el = getElementRef.current();
       if (!el || tracksRef.current.length === 0) return;
       const targetIndex = index ?? state.currentIndex;
-      if (index != null || !el.src) {
+      if (index != null || !el.src || state.error) {
         loadAndPlay(targetIndex);
       } else {
-        el.play().catch(() => {});
+        el.play().catch((error: unknown) => {
+          if (error instanceof DOMException && error.name === 'AbortError') return;
+          const message = error instanceof DOMException && error.name === 'NotAllowedError' ? null : 'Failed to play media';
+          setState((s) => ({ ...s, playing: false, loading: false, error: message }));
+        });
         $activePlayerId.set(playerId);
       }
     },
-    [state.currentIndex, loadAndPlay, playerId],
+    [state.currentIndex, state.error, loadAndPlay, playerId],
   );
 
   const pause = useCallback(() => {
@@ -253,6 +263,7 @@ export function useMediaPlayer<T>({ tracks, getUrl, getElement }: UseMediaPlayer
   }, []);
 
   return {
+    ready: boundElement !== null,
     state,
     timeStore,
     play,

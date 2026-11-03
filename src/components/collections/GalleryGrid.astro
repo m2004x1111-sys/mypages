@@ -1,28 +1,37 @@
 ---
-import { galleryImages } from '@/data/collections';
+import { getPhotoAssets } from '@lib/photo-assets';
+import { type GalleryImage, galleryImages } from '@/data/collections';
 
-const categories = ['全部', '风景', '插画'];
+interface Props {
+  images?: readonly GalleryImage[];
+  label?: string;
+  showFilters?: boolean;
+  description?: string;
+}
+const { images = galleryImages, label = '图片收藏', showFilters = true, description = '--- IGNORE ---' } = Astro.props;
+const categories = ['全部', ...new Set(images.map((item) => item.category))];
+const photos = await Promise.all(images.map(async (item) => ({ ...item, ...(await getPhotoAssets(item.image)) })));
 ---
 
-<section class="gallery" data-gallery aria-label="图片收藏">
+<section class="gallery" data-gallery aria-label={label}>
   <div class="gallery-tools">
-    <div class="filter-tabs" role="group" aria-label="按图片类型筛选">
+    {showFilters && <div class="filter-tabs" role="group" aria-label="按图片类型筛选">
       {categories.map((category, index) => <button type="button" data-filter={category} aria-pressed={index === 0}>{category}</button>)}
-    </div>
-    <p class="gallery-count" aria-live="polite" data-gallery-count>{galleryImages.length} 张示例图片</p>
+    </div>}
+    <p class="gallery-count" aria-live="polite" data-gallery-count>{photos.length} 张图片</p>
   </div>
   <div class="gallery-masonry">
-    {galleryImages.map((item, index) => (
+    {photos.map((item, index) => (
       <figure data-category={item.category}>
-        <button type="button" class="image-tile" data-photo={index} data-image={item.image} data-title={item.title} data-note={item.note} data-source={item.source} aria-label={`放大查看：${item.title}`}>
-          <img src={item.image} alt={item.title} width="1000" height="700" loading="lazy" decoding="async" />
+        <button type="button" class="image-tile" data-photo={index} data-image={item.preview} data-title={item.title} data-note={item.note} data-source={item.source} data-source-label={item.sourceLabel} aria-label={`放大查看：${item.title}`}>
+          <img src={item.thumbnail} alt={item.title} width={item.width} height={item.height} loading="lazy" decoding="async" />
           <span class="image-overlay"><span>放大查看</span><span aria-hidden="true">↗</span></span>
         </button>
-        <figcaption><span>{item.title}</span><small>{item.category} / 示例</small></figcaption>
+        <figcaption><span>{item.title}</span><small>{item.category}{item.example ? ' / 示例' : ''}</small></figcaption>
       </figure>
     ))}
   </div>
-  <p class="gallery-note">这里先用摄影与主题插画展示相册效果，尚未加入你的真实收藏。点击图片可以放大，用方向键切换。</p>
+  <p class="gallery-note">{description}</p>
   <dialog class="image-lightbox" aria-labelledby="lightbox-title">
     <div class="lightbox-bar"><span data-lightbox-count></span><button type="button" data-close aria-label="关闭图片预览">✕</button></div>
     <div class="lightbox-stage">
@@ -57,7 +66,9 @@ const categories = ['全部', '风景', '插画'];
       preview.alt = item.dataset.title ?? '';
       title.textContent = item.dataset.title ?? '';
       note.textContent = item.dataset.note ?? '';
+      source.hidden = !item.dataset.source;
       source.href = item.dataset.source ?? '';
+      source.textContent = item.dataset.sourceLabel || '素材来源 ↗';
       count.textContent = `${current + 1} / ${activePhotos.length}`;
     };
     const change = (step: number) => { current = (current + step + activePhotos.length) % activePhotos.length; render(); };
@@ -70,7 +81,7 @@ const categories = ['全部', '风景', '插画'];
         figures.forEach((figure) => { figure.hidden = filter.dataset.filter !== '全部' && figure.dataset.category !== filter.dataset.filter; });
         activePhotos = photos.filter((photo) => !photo.closest('figure')?.hidden);
         const resultCount = root.querySelector('[data-gallery-count]');
-        if (resultCount) resultCount.textContent = `${activePhotos.length} 张示例图片`;
+        if (resultCount) resultCount.textContent = `${activePhotos.length} 张图片`;
       }
       const photo = target.closest<HTMLButtonElement>('[data-photo]');
       if (photo) { current = activePhotos.indexOf(photo); render(); dialog.showModal(); }

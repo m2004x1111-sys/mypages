@@ -125,6 +125,6 @@ export const SETTINGS_REGISTRY: SettingItem[] = [
  */
 export function isSettingVisible(item: SettingItem): boolean {
   if (item.gatedBy === 'christmas') return christmasConfig.enabled;
-  if (item.gatedBy === 'bgm') return bgmConfig.enabled && bgmConfig.audio.length > 0;
+  if (item.gatedBy === 'bgm') return bgmConfig.enabled && (bgmConfig.audio.length > 0 || bgmConfig.tracks.length > 0);
   return true;
 }

@@ -5,11 +5,11 @@ import { collectionSections } from '@/data/collections';
 
 <section class="home-collections" aria-labelledby="collection-welcome">
   <div class="welcome-line">
-    <span>TRAVEL / IMAGES / FAVORITES</span>
+    <span>旅行 / 百合 / </span>
     <span class="welcome-flower" aria-hidden="true">✿</span>
   </div>
-  <h2 id="collection-welcome">走过的路，遇见的光，<br />和一直喜欢的故事。</h2>
-  <p class="welcome-description">你好，这里是 benmingw 的小窝。旅行、画面、作品，都想好好收藏。</p>
+  <h2 id="collection-welcome">もし好きにすれば、<br />&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;多いほどほうがいいだ</h2>
+  <p class="welcome-description">欢迎回来</p>
   <div class="collection-portals">
     {collectionSections.map((section) => (
       <a class="collection-portal" href={section.href}>
@@ -25,7 +25,7 @@ import { collectionSections } from '@/data/collections';
       </a>
     ))}
   </div>
-  <p class="sample-caption">小窝正在布置中 · 当前内容为排版示例，真实的旅行和收藏会慢慢加入。</p>
+  <p class="sample-caption">——————————————————————————————————————————————————————————————</p>
 </section>
 
 <style>
@@ -33,6 +33,32 @@ import { collectionSections } from '@/data/collections';
   .welcome-line { display: flex; justify-content: space-between; align-items: center; color: hsl(var(--primary)); font-size: 9px; letter-spacing: .18em; }
   .welcome-flower { font-size: 23px; opacity: .55; }
   h2 { margin: 12px 0; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.7; letter-spacing: .04em; font-weight: 600; }
+  /* 首页标题的颜色：依次为粉色、紫色、蓝色。 */
+  #collection-welcome {
+    --welcome-gradient: linear-gradient(110deg, #c93b6e, #8950c4, #326fc4);
+    width: fit-content;
+    max-width: 100%;
+    color: hsl(var(--primary));
+  }
+  :global(.dark) #collection-welcome {
+    --welcome-gradient: linear-gradient(110deg, #f49abd, #c5a3f0, #87bcf5);
+  }
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    #collection-welcome {
+      background-image: var(--welcome-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  @media (forced-colors: active) {
+    #collection-welcome {
+      background-image: none;
+      color: CanvasText;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
   .welcome-description { margin: 0; font-size: 13px; line-height: 1.9; color: hsl(var(--muted-foreground)); }
   .collection-portals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
   .collection-portal { overflow: hidden; border: 1px solid hsl(var(--primary) / .11); border-radius: 14px; background: hsl(var(--card)); transition: transform .25s, box-shadow .25s; }

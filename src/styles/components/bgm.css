@@ -1,4 +1,20 @@
 /* BGM floating panel — compact overrides for .audio-player */
+.bgm-panel-position {
+  position: fixed;
+  top: 4.5rem;
+  right: max(1rem, calc((100vw - 80rem) / 2 + 1.5rem));
+  z-index: 40;
+  width: 460px;
+  max-width: calc(100vw - 2rem);
+}
+
+.bgm-playback-error {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  color: hsl(var(--destructive));
+  font-size: 0.8rem;
+}
+
 .bgm-panel-player.audio-player {
   margin: 0;
   border: none;
@@ -295,6 +311,25 @@
 
 .bgm-panel::-webkit-scrollbar {
   display: none;
+}
+
+.bgm-panel-no-lyrics:not([aria-busy="true"]) {
+  height: auto;
+  max-height: calc(100dvh - 10rem);
+}
+
+.bgm-panel-no-lyrics .bgm-panel-ready {
+  height: auto;
+  max-height: calc(100dvh - 10rem);
+}
+
+.bgm-panel-no-lyrics .audio-player-playlist {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.bgm-panel-no-lyrics .audio-player-song-list {
+  max-height: 160px;
 }
 
 /* ── Mobile: taller lyrics area for column layout ── */

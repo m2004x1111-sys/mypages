@@ -1,8 +1,10 @@
 export interface TravelPhoto {
   title: string;
   image: string;
+  thumbnail?: string;
   note?: string;
   source?: string;
+  sourceLabel?: string;
 }
 
 export interface TravelLocation {

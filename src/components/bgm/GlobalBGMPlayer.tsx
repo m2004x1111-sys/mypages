@@ -5,7 +5,7 @@
  * so that music continues playing when the panel UI is closed.
  * The panel is rendered via AnimatePresence for smooth enter/exit transitions.
  *
- * Playlist resolution is lazy — only triggered on first panel open.
+ * Local tracks are immediately available; platform playlists resolve on first panel open.
  */
 
 import { LazyMotionProvider } from '@components/common/LazyMotionProvider';
@@ -14,6 +14,7 @@ import { PlayerPreview } from '@components/markdown/audio-player/PlayerPreview';
 import { MediaControls } from '@components/markdown/shared/MediaControls';
 import { FloatingFocusManager, useDismiss, useFloating, useInteractions, useRole } from '@floating-ui/react';
 import { useAudioPlayer } from '@hooks/useAudioPlayer';
+import { useBgmAutoplay } from '@hooks/useBgmAutoplay';
 import { useIsMounted } from '@hooks/useIsMounted';
 import { useMediaQuery } from '@hooks/useMediaQuery';
 import { useMotionLevel } from '@hooks/useMotionLevel';
@@ -22,34 +23,39 @@ import { Icon } from '@iconify/react';
 import type { BgmAudioGroup } from '@lib/config/types';
 import type { MetingSong } from '@lib/meting';
 import { resolvePlaylist } from '@lib/meting';
+import { cn } from '@lib/utils';
 import { useStore } from '@nanostores/react';
 import { $isAnyModalOpen, $isDrawerOpen } from '@store/modal';
 import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { $bgmPanelOpen, closeBgmPanel } from '@/store/bgm';
+import { bgmWidgetEnabled } from '@/store/settings';
 
 interface GlobalBGMPlayerProps {
+  autoplay: boolean;
+  localTracks: MetingSong[];
   audioGroups: BgmAudioGroup[];
   metingApi?: string;
 }
 
-export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPlayerProps) {
+export default function GlobalBGMPlayer({ autoplay, localTracks, audioGroups, metingApi }: GlobalBGMPlayerProps) {
   const { t } = useTranslation();
   const isMounted = useIsMounted();
   const panelOpen = useStore($bgmPanelOpen);
+  const widgetEnabled = useStore(bgmWidgetEnabled);
   const isDrawerOpen = useStore($isDrawerOpen);
   const isAnyModalOpen = useStore($isAnyModalOpen);
   const isMobilePlayer = useMediaQuery('(max-width: 600px)');
   const motionDisabled = useMotionLevel() === 'reduced';
 
-  const [tracks, setTracks] = useState<MetingSong[]>([]);
-  const [groups, setGroups] = useState<PlaylistGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [tracks, setTracks] = useState<MetingSong[]>(localTracks);
+  const [groups, setGroups] = useState<PlaylistGroup[]>([{ startIndex: 0, count: localTracks.length }]);
+  const [loading, setLoading] = useState(audioGroups.length > 0);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [retryKey, setRetryKey] = useState(0);
 
-  const [playlistRequested, setPlaylistRequested] = useState(false);
+  const [playlistRequested, setPlaylistRequested] = useState(autoplay && audioGroups.length > 0);
 
   useEffect(() => {
     if (panelOpen) setPlaylistRequested(true);
@@ -58,9 +64,14 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
   // Closing the UI must not cancel the first request and leave subsequent openings stuck loading.
   // biome-ignore lint/correctness/useExhaustiveDependencies: retryKey intentionally triggers another request.
   useEffect(() => {
-    if (!playlistRequested) return;
+    // Local songs are immediately available, without a music service request.
+    if (!playlistRequested) {
+      setTracks(localTracks);
+      setGroups([{ startIndex: 0, count: localTracks.length }]);
+      return;
+    }
     let cancelled = false;
-    setLoading(true);
+    setLoading(audioGroups.length > 0);
     setError(null);
 
     async function resolve() {
@@ -68,8 +79,8 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
         const results = await Promise.all(audioGroups.map((group) => resolvePlaylist(group.list, metingApi)));
 
         if (!cancelled) {
-          const allTracks: MetingSong[] = [];
-          const resolvedGroups: PlaylistGroup[] = [];
+          const allTracks: MetingSong[] = [...localTracks];
+          const resolvedGroups: PlaylistGroup[] = localTracks.length ? [{ startIndex: 0, count: localTracks.length }] : [];
           for (let i = 0; i < results.length; i++) {
             const startIndex = allTracks.length;
             allTracks.push(...results[i]);
@@ -91,14 +102,22 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
     return () => {
       cancelled = true;
     };
-  }, [playlistRequested, audioGroups, retryKey, metingApi]);
+  }, [playlistRequested, localTracks, audioGroups, retryKey, metingApi]);
 
   // Audio hook at top level — Audio element persists across panel open/close
   const player = useAudioPlayer(tracks);
+  useBgmAutoplay({
+    enabled: autoplay && widgetEnabled,
+    ready: player.ready,
+    trackCount: tracks.length,
+    playing: player.state.playing,
+    error: player.state.error,
+    play: player.play,
+  });
   const currentTrack = tracks[player.state.currentIndex] ?? null;
 
   // Hide panel when drawer is open
-  const isHidden = isDrawerOpen || isAnyModalOpen;
+  const isHidden = isDrawerOpen || isAnyModalOpen || !widgetEnabled;
 
   // floating-ui: dismiss on ESC / outside click
   const { refs, context } = useFloating({
@@ -109,7 +128,7 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
   });
   const dismiss = useDismiss(context, {
     outsidePressEvent: 'mousedown',
-    // Exclude the BGM toggle button in FloatingGroup to prevent toggle/dismiss race
+    // The header trigger toggles the panel itself; exclude it from outside dismissal.
     outsidePress: (event) => {
       const target = event.target as HTMLElement;
       return !target.closest('[data-bgm-toggle]');
@@ -191,7 +210,7 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
           timeStore={player.timeStore}
           lrcLineHeight={28}
           lrcContainerHeight={isMobilePlayer ? 168 : 140}
-          reserveLyrics
+          reserveLyrics={Boolean(currentTrack?.lrc)}
         />
         <MediaControls
           playing={player.state.playing}
@@ -218,6 +237,11 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
           onTrackSelect={player.play}
           onSeek={player.seek}
         />
+        {player.state.error && (
+          <p className="bgm-playback-error" role="alert">
+            {t('audio.playbackError')}
+          </p>
+        )}
       </div>
     );
   };
@@ -229,14 +253,18 @@ export default function GlobalBGMPlayer({ audioGroups, metingApi }: GlobalBGMPla
           <FloatingFocusManager key="bgm-panel" context={context} modal={false}>
             <m.div
               ref={refs.setFloating}
-              {...getFloatingProps()}
-              className="fixed right-16 bottom-20 z-40 w-[460px] max-w-[calc(100vw-5rem)]"
+              {...getFloatingProps({ 'aria-label': t('floating.bgm') })}
+              id="global-bgm-panel"
+              className="bgm-panel-position"
               initial={motionDisabled ? false : { opacity: 0, y: 12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={motionDisabled ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.98 }}
               transition={motionDisabled ? { duration: 0 } : { duration: 0.18, ease: 'easeOut' }}
             >
-              <div className="bgm-panel rounded-2xl shadow-xl" aria-busy={loading}>
+              <div
+                className={cn('bgm-panel rounded-2xl shadow-xl', !currentTrack?.lrc && 'bgm-panel-no-lyrics')}
+                aria-busy={loading}
+              >
                 {/* Close button */}
                 <button
                   type="button"

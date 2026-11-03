@@ -8,7 +8,7 @@ export function renderPlaces(container: HTMLElement, locations: readonly TravelL
     button.dataset.location = location.id;
     button.setAttribute('aria-pressed', String(location.id === selectedId));
     const image = document.createElement('img');
-    image.src = location.photos[0].image;
+    image.src = location.photos[0].thumbnail ?? location.photos[0].image;
     image.alt = '';
     image.loading = 'lazy';
     const text = document.createElement('span');
@@ -47,7 +47,7 @@ export function renderLocationDetail(container: HTMLElement, location?: TravelLo
     button.dataset.mapPhoto = String(index);
     button.setAttribute('aria-label', `放大旅行照片：${photo.title}`);
     const image = document.createElement('img');
-    image.src = photo.image;
+    image.src = photo.thumbnail ?? photo.image;
     image.alt = photo.title;
     image.loading = 'lazy';
     const caption = document.createElement('span');

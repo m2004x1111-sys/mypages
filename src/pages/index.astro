@@ -55,7 +55,7 @@ const page: Page<BlogPost> = {
 ---
 
 <Layout locale={locale} title={seoConfig.title}>
-  <TwoColumnLayout>
+  <TwoColumnLayout showPostFooter={false}>
     <Cover slot="cover" />
     <HomeSider slot="sider" />
     <div

@@ -1,21 +1,19 @@
 ---
-title: 把喜欢的画面，放进一间小相册
+title: 分享一些插画
 link: little-collection
 date: 2026-11-02 06:00:00
-description: 为风景、插画和喜欢的光影留一个角落。相册先用示例素材布置，之后再加入自己的收藏。
-cover: /img/cover/21.webp
+description: 为自己记录一下。
+cover: /img/cover/20.webp
 categories: [收藏]
-tags: [图片, 插画, 收藏]
-colophon: [example]
+tags: [插画]
+colophon: []
 catalog: true
 ---
 
-## 有些画面，想多看一眼
+## 好看的插画
 
-一张风景、一幅插画，或某个特别喜欢的颜色。有时候不需要太多解释，只是想把它好好收藏。
+![](/img/y1/y10.jpg)
 
-[打开图片收藏](/gallery)，可以在风景和插画之间切换，也可以点开一张图放大查看。
+[打开图片收藏](/gallery)。
 
-## 这间相册还在慢慢布置
 
-目前展示的是摄影与主题插画示例，并非 benmingw 的实拍或已经整理好的真实收藏。之后再把真正喜欢的图片放进来，附上一点文字，也记得留下作者和来源。

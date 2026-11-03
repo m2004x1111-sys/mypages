@@ -1,6 +1,7 @@
 # build output
 dist/
 .sonda/
+.acceptance/
 
 # generated types
 .astro/
