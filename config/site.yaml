@@ -59,8 +59,12 @@ featuredSeries:
     links:
       rss: /rss.xml
 
-# 有真实的社交账号后，可参照 GETTING-STARTED.md 添加。
+# 首页个人资料卡片中的社交链接。
 social:
+  bilibili:
+    url: https://space.bilibili.com/123344056
+    icon: ri:bilibili-fill
+    color: '#fb7299'
   rss:
     url: /rss.xml
     icon: ri:rss-line
