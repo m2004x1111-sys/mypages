@@ -118,6 +118,27 @@ pnpm preview --host 127.0.0.1
 
 ## 素材与源码
 
+### 手动维护追番记录
+
+导航中的「追番记录」打开 `/anime`，按填写顺序展示清单，可筛选在看、已看完、想看、搁置和弃番。清单保存在 `src/data/anime.ts` 的 `animeList` 数组中，已从 B 站账号 `123344056` 的公开“已看完”列表导入，封面保存在本地。此清单为一次性导入，不会自动同步 B 站；后续直接修改文件即可。文件内保留了注释示例，复制并去掉每行开头的 `//` 后即可添加新记录。
+
+```ts
+{
+  title: '动漫名称',
+  status: '在看',
+  cover: '/img/anime/my-anime.webp',
+  watched: 3,
+  episodes: 12,
+  score: 9,
+  note: '自己的感想。',
+  url: 'https://www.bilibili.com/bangumi/play/你的番剧地址',
+},
+```
+
+`title` 和 `status` 必填。`watched` 为已看集数，`episodes` 为总集数，`score` 为自己的 0～10 分评分；进度、评分、感想和观看链接均可省略。多部动漫依次添加 `{ ... },`，数组顺序就是页面顺序。
+
+封面放在 `public/img/anime/`，如 `public/img/anime/my-anime.webp` 对应 `cover: '/img/anime/my-anime.webp'`；没有封面时可删去 `cover` 行。页面标题和介绍在 `src/pages/anime.astro`，布局和样式在 `src/components/collections/AnimeShelf.astro`。保存数据文件后开发页面会更新，线上需要提交到 GitHub 并重新构建部署。此清单手动管理，无需配置 Bangumi 账号。
+
 ### 全站音乐播放器
 
 - 入口在右上角搜索按钮左边，点击音乐图标展开歌单和播放控制。

@@ -1,0 +1,155 @@
+---
+import { Icon } from 'astro-icon/components';
+import { type AnimeStatus, animeList } from '@/data/anime';
+
+const statuses: readonly AnimeStatus[] = ['已看完'];
+const filters = ['全部', ...statuses];
+const counts = Object.fromEntries(
+  filters.map((status) => [
+    status,
+    status === '全部' ? animeList.length : animeList.filter((anime) => anime.status === status).length,
+  ]),
+);
+const works = animeList.map((anime) => {
+  const episodes =
+    typeof anime.episodes === 'number' && Number.isFinite(anime.episodes) && anime.episodes > 0
+      ? Math.floor(anime.episodes)
+      : undefined;
+  const rawWatched =
+    typeof anime.watched === 'number' && Number.isFinite(anime.watched) ? Math.max(0, Math.floor(anime.watched)) : undefined;
+  const watched = rawWatched === undefined ? undefined : episodes ? Math.min(rawWatched, episodes) : rawWatched;
+  const score =
+    typeof anime.score === 'number' && Number.isFinite(anime.score) ? Math.min(10, Math.max(0, anime.score)) : undefined;
+  return { ...anime, cover: anime.cover?.trim(), url: anime.url?.trim(), episodes, watched, score };
+});
+---
+
+<section class="anime-shelf" data-anime-shelf aria-label="我的动漫清单">
+  <div class="anime-toolbar">
+    <div class="anime-filters" role="group" aria-label="按观看状态筛选">
+      {filters.map((status) => (
+        <button type="button" class="anime-filter" data-anime-filter={status} aria-pressed={status === '全部'}>
+          {status}<span>{counts[status]}</span>
+        </button>
+      ))}
+    </div>
+    <p class="anime-count" data-anime-count role="status" aria-live="polite">共 {works.length} 部</p>
+  </div>
+
+  <div class="anime-grid">
+    {works.map((anime) => {
+      const Card = anime.url ? 'a' : 'div';
+      return (
+        <article class="anime-card" data-anime-status={anime.status}>
+          <Card class="anime-card-content" href={anime.url || undefined} target={anime.url ? '_blank' : undefined} rel={anime.url ? 'noopener noreferrer' : undefined} aria-label={anime.url ? `前往观看《${anime.title}》（新标签页打开）` : undefined}>
+            <div class="anime-poster">
+              {anime.cover ? (
+                <img src={anime.cover} alt="" width="300" height="450" loading="lazy" decoding="async" />
+              ) : (
+                <div class="anime-no-cover"><Icon name="ri:film-line" aria-hidden="true" /><span>留一帧给故事</span></div>
+              )}
+              <span class="anime-status" data-status={anime.status}>{anime.status}</span>
+              {anime.score !== undefined && <span class="anime-score"><Icon name="ri:star-fill" aria-hidden="true" />{anime.score.toFixed(1)}</span>}
+            </div>
+            <div class="anime-info">
+              <h3>{anime.title}{anime.url && <Icon name="ri:external-link-line" aria-hidden="true" />}</h3>
+              {(anime.watched !== undefined || anime.episodes !== undefined) && (
+                <div class="anime-progress">
+                  <p>{anime.watched !== undefined ? `已看 ${anime.watched} 集` : `全 ${anime.episodes} 集`}{anime.watched !== undefined && anime.episodes !== undefined && <span> / 全 {anime.episodes} 集</span>}</p>
+                  {anime.watched !== undefined && anime.episodes !== undefined && (
+                    <progress value={anime.watched} max={anime.episodes} aria-label={`${anime.title}：已看 ${anime.watched} 集，共 ${anime.episodes} 集`} />
+                  )}
+                </div>
+              )}
+              {anime.note && <p class="anime-note">{anime.note}</p>}
+            </div>
+          </Card>
+        </article>
+      );
+    })}
+  </div>
+
+  <div class="anime-empty" data-anime-empty hidden={works.length > 0}>
+    <Icon name="ri:movie-2-line" aria-hidden="true" />
+    <h3>{works.length === 0 ? '还没有动漫记录' : '这个分类还没有记录'}</h3>
+    <p>把看过的故事，慢慢收藏在这里。</p>
+  </div>
+</section>
+
+<script>
+  function initAnimeShelves() {
+    document.querySelectorAll<HTMLElement>('[data-anime-shelf]').forEach((shelf) => {
+      if (shelf.dataset.initialized) return;
+      shelf.dataset.initialized = 'true';
+      const buttons = [...shelf.querySelectorAll<HTMLButtonElement>('[data-anime-filter]')];
+      const cards = [...shelf.querySelectorAll<HTMLElement>('[data-anime-status]')];
+      const empty = shelf.querySelector<HTMLElement>('[data-anime-empty]');
+      const count = shelf.querySelector<HTMLElement>('[data-anime-count]');
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const selected = button.dataset.animeFilter;
+          let visible = 0;
+          cards.forEach((card) => {
+            card.hidden = selected !== '全部' && card.dataset.animeStatus !== selected;
+            if (!card.hidden) visible += 1;
+          });
+          buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+          if (empty) empty.hidden = visible > 0;
+          if (count) count.textContent = selected === '全部' ? `共 ${visible} 部` : `${selected} · ${visible} 部`;
+        });
+      });
+    });
+  }
+
+  if (document.readyState !== 'loading') initAnimeShelves();
+  document.addEventListener('DOMContentLoaded', initAnimeShelves, { once: true });
+  document.addEventListener('astro:page-load', initAnimeShelves);
+</script>
+
+<style>
+  .anime-shelf { min-width: 0; }
+  .anime-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+  .anime-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .anime-filter { display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border: 1px solid hsl(var(--border)); border-radius: 999px; background: hsl(var(--card)); color: hsl(var(--muted-foreground)); font-size: 12px; cursor: pointer; transition: color 160ms, border-color 160ms, background-color 160ms; }
+  .anime-filter span { font-size: 10px; font-variant-numeric: tabular-nums; opacity: .8; }
+  .anime-filter:hover, .anime-filter[aria-pressed='true'] { border-color: hsl(var(--primary) / .3); background: hsl(var(--primary) / .08); color: hsl(var(--primary)); }
+  .anime-filter:focus-visible, a.anime-card-content:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+  .anime-count { margin: 0; color: hsl(var(--muted-foreground)); font-size: 12px; white-space: nowrap; }
+  .anime-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; }
+  .anime-card { min-width: 0; }
+  .anime-card[hidden], .anime-empty[hidden] { display: none; }
+  .anime-card-content { display: block; color: inherit; text-decoration: none; border-radius: 14px; }
+  .anime-poster { position: relative; aspect-ratio: 2 / 3; overflow: hidden; border: 1px solid hsl(var(--border)); border-radius: 14px; background: hsl(var(--muted)); box-shadow: 0 10px 24px -16px hsl(var(--foreground) / .35); }
+  .anime-poster > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .anime-no-cover { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: linear-gradient(145deg, hsl(var(--primary) / .1), hsl(var(--card))); color: hsl(var(--primary) / .6); }
+  .anime-no-cover svg { width: 38px; height: 38px; }
+  .anime-no-cover span { font-size: 11px; letter-spacing: .12em; }
+  .anime-status { position: absolute; top: 12px; left: 10px; padding: 4px 10px; border: 1px solid hsl(var(--border)); border-radius: 999px; background: hsl(var(--card) / .94); color: hsl(var(--foreground)); font-size: 11px; }
+  .anime-status[data-status='在看'] { background: hsl(var(--primary)); border-color: transparent; color: hsl(var(--primary-foreground)); }
+  .anime-score { position: absolute; right: 10px; bottom: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 7px; background: hsl(0 0% 10% / .74); color: white; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .anime-score svg { width: 12px; height: 12px; color: #f7cf75; }
+  .anime-info { padding-top: 13px; }
+  .anime-info h3 { display: flex; align-items: baseline; gap: 6px; margin: 0 0 9px; color: hsl(var(--foreground)); font-size: 15px; font-weight: 650; line-height: 1.65; overflow-wrap: anywhere; }
+  .anime-info h3 svg { width: 12px; height: 12px; flex-shrink: 0; color: hsl(var(--muted-foreground)); }
+  a.anime-card-content:hover h3 { color: hsl(var(--primary)); }
+  .anime-progress p { margin: 0 0 7px; color: hsl(var(--primary)); font-size: 11px; line-height: 1.7; }
+  .anime-progress p span { color: hsl(var(--muted-foreground)); }
+  progress { display: block; width: 100%; height: 4px; overflow: hidden; border: 0; border-radius: 999px; background: hsl(var(--primary) / .12); color: hsl(var(--primary)); appearance: none; }
+  progress::-webkit-progress-bar { border-radius: 999px; background: hsl(var(--primary) / .12); }
+  progress::-webkit-progress-value { border-radius: 999px; background: hsl(var(--primary)); }
+  progress::-moz-progress-bar { border-radius: 999px; background: hsl(var(--primary)); }
+  .anime-note { display: -webkit-box; margin: 10px 0 0; overflow: hidden; color: hsl(var(--muted-foreground)); font-size: 12px; line-height: 1.85; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+  .anime-empty { padding: 54px 20px; border: 1px dashed hsl(var(--primary) / .24); border-radius: 16px; background: hsl(var(--primary) / .025); text-align: center; }
+  .anime-empty > svg { width: 38px; height: 38px; margin-inline: auto; color: hsl(var(--primary) / .65); }
+  .anime-empty h3 { margin: 18px 0 10px; font-size: 17px; font-weight: 600; }
+  .anime-empty p { margin: 0; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.8; }
+  @media (max-width: 600px) {
+    .anime-toolbar { gap: 14px; margin-bottom: 22px; }
+    .anime-filter { padding: 7px 10px; }
+    .anime-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 13px; }
+    .anime-poster { border-radius: 10px; }
+    .anime-info h3 { font-size: 14px; }
+    .anime-status { top: 9px; left: 7px; padding: 3px 8px; font-size: 10px; }
+  }
+</style>

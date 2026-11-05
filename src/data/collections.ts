@@ -81,6 +81,14 @@ export const galleryImages: readonly GalleryImage[] = [
     source: '--- IGNORE ---',
     example: false,
   },
+  {
+    title: '茉团',
+    category: '邦邦',
+    image: '/img/y1/y11.jpg',
+    note: '茉团',
+    source: '--- IGNORE ---',
+    example: false,
+  },
 ] as const;
 
 export interface FavoriteWork {
@@ -175,5 +183,15 @@ export const favoriteExamples: readonly FavoriteWork[] = [
     note: '红茶老师是神！',
     color: '#f1b6c9',
     url: 'https://kakuyomu.jp/works/16818093089913215356',
+  },
+  {
+    category: '漫画',
+    title: '与讨厌的你的非日常',
+    subtitle: 'jk x  jk',
+    icon: 'ri:book-open-line',
+    image: '/img/yuri/yuri10.webp',
+    note: '学马士同人',
+    color: '#b8c8aa',
+    url: ' ',
   },
 ] as const;

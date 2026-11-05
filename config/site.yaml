@@ -140,6 +140,9 @@ navigation:
   - name: 喜欢的作品
     path: /favorites
     icon: ri:bookmark-3-line
+  - name: 追番记录
+    path: /anime
+    icon: ri:tv-2-line
   - name: 文章
     nameKey: nav.posts
     icon: ri:quill-pen-ai-fill

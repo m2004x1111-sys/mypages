@@ -1,0 +1,13 @@
+---
+import AnimeShelf from '@components/collections/AnimeShelf.astro';
+import CollectionPage from '@components/collections/CollectionPage.astro';
+
+interface Props {
+  locale?: string;
+}
+const { locale } = Astro.props;
+---
+
+<CollectionPage title="追番记录" english="Stories, one episode at a time" description="看过的、正在追的，还有留给以后的故事。" locale={locale}>
+  <AnimeShelf />
+</CollectionPage>
