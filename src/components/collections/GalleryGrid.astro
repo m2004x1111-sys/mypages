@@ -8,7 +8,7 @@ interface Props {
   showFilters?: boolean;
   description?: string;
 }
-const { images = galleryImages, label = '图片收藏', showFilters = true, description = '--- IGNORE ---' } = Astro.props;
+const { images = galleryImages, label = '珍藏', showFilters = true, description = '--- IGNORE ---' } = Astro.props;
 const categories = ['全部', ...new Set(images.map((item) => item.category))];
 const photos = await Promise.all(images.map(async (item) => ({ ...item, ...(await getPhotoAssets(item.image)) })));
 ---

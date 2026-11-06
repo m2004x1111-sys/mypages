@@ -139,6 +139,30 @@ pnpm preview --host 127.0.0.1
 
 封面放在 `public/img/anime/`，如 `public/img/anime/my-anime.webp` 对应 `cover: '/img/anime/my-anime.webp'`；没有封面时可删去 `cover` 行。页面标题和介绍在 `src/pages/anime.astro`，布局和样式在 `src/components/collections/AnimeShelf.astro`。保存数据文件后开发页面会更新，线上需要提交到 GitHub 并重新构建部署。此清单手动管理，无需配置 Bangumi 账号。
 
+### 好看的卡面
+
+导航中的「收藏」是下拉菜单，包含「好看的插画」（`/gallery`）和「好看的卡面」（`/cards`），展开方式与「文章」菜单一致。图片尚未添加时，卡面页显示卡片叠放的空白收藏页；添加后按原始比例展示卡面，支持按游戏或作品分类筛选。双图卡面点击图片会闪白切换，再次点击切回；右下角放大按钮打开预览，预览中也可以点击图片切换双图、用方向键切换收藏、查看当前原图。仅有一张图片时，点击仍为放大查看。
+
+现有 19 张原图位于 `public/img/card/`，已按文件名数字顺序导入 10 条收藏：`.1` 是第一张，`.2` 是第二张，共 9 组双图；`3.png` 保留为单图。卡面暂以「卡面 01」至「卡面 10」命名，可自行修改名称和分类。
+
+新增图片也可以放在 `public/img/cards/`，内容统一修改 `src/data/card-art.ts` 的 `cardArtImages` 数组。文件内保留了注释示例，复制到数组末尾并去掉 `//`，按实际文件名填写；下面是一条记录的格式：
+
+```ts
+export const cardArtImages: readonly CardArtImage[] = [
+  {
+    title: '卡面名称',
+    category: '游戏或作品名称',
+    image: '/img/cards/first-card.webp',
+    secondImage: '/img/cards/second-card.webp',
+    note: '喜欢这张卡面的理由。',
+  },
+];
+```
+
+`title` 是卡面名称，`category` 用于分类筛选，`image` 是第一张图片地址，`secondImage` 是可选的第二张图片地址，`note` 是放大后显示的可选说明。不需要双图切换时，删除 `secondImage` 行即可。`public/img/cards/first-card.webp` 对应 `/img/cards/first-card.webp`，可使用 JPG、PNG 或 WebP 图片，注意扩展名一致。多张卡面依次添加 `{ ... },`，数组顺序就是展示顺序。图片只在加载完成后开始切换，系统开启减少动态效果时直接换图。
+
+页面标题和介绍在 `src/pages/cards.astro`，空白收藏页在 `src/components/collections/CardArtShelf.astro`，卡面网格在 `src/components/collections/CardArtGrid.astro`，切换逻辑在同目录的 `card-art-gallery.ts`，样式在 `card-art-gallery.css`。插画页继续使用原来的 `GalleryGrid.astro`，不受双图切换功能影响。首次添加导航后需重启开发服务器；以后修改数据文件保存即可更新，线上需要提交并重新构建部署。
+
 ### 全站音乐播放器
 
 - 入口在右上角搜索按钮左边，点击音乐图标展开歌单和播放控制。

@@ -1,0 +1,106 @@
+---
+import { Icon } from 'astro-icon/components';
+import { cardArtImages } from '@/data/card-art';
+import CardArtGrid from './CardArtGrid.astro';
+
+const images = cardArtImages;
+---
+
+<section class="card-art-shelf" aria-label="卡面收藏">
+  <div class="archive-heading">
+  </div>
+  {images.length > 0 ? (
+    <div class="card-art-gallery">
+      <CardArtGrid images={images} />
+    </div>
+  ) : (
+    <div class="card-art-empty">
+      <div class="card-stack" aria-hidden="true">
+        <div class="collectible card-left"><span>✦</span></div>
+        <div class="collectible card-right"><span>✧</span></div>
+        <div class="collectible card-front">
+          <span class="card-corner">✧</span>
+          <div class="card-emblem"><Icon name="ri:sparkling-line" /></div>
+          <span class="card-inscription">a little favorite</span>
+          <span class="card-corner corner-bottom">✧</span>
+        </div>
+        <span class="floating-star star-left">✧</span>
+        <span class="floating-star star-right">✦</span>
+      </div>
+      <p class="empty-eyebrow">WAITING FOR A LITTLE SPARK</p>
+      <h3>给喜欢的卡面，留一个位置</h3>
+      <p class="empty-description">那些一眼心动的画面，慢慢收进来。</p>
+      <div class="empty-rule" aria-hidden="true"><span></span>✧<span></span></div>
+    </div>
+  )}
+</section>
+
+<style>
+  .archive-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    font-size: 11px;
+    letter-spacing: .1em;
+  }
+  .archive-heading > span:first-child { display: inline-flex; align-items: center; gap: 8px; color: hsl(var(--primary)); }
+  .archive-heading svg { width: 16px; height: 16px; }
+  .archive-heading > span:last-child { white-space: nowrap; }
+  .card-art-empty {
+    position: relative;
+    overflow: hidden;
+    padding: 38px 20px 30px;
+    border: 1px solid hsl(var(--primary) / .14);
+    border-radius: 22px;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 24%, hsl(var(--primary) / .1), transparent 64%), hsl(var(--primary) / .02);
+  }
+  .card-stack { position: relative; width: 290px; max-width: 100%; height: 242px; margin: 0 auto 20px; }
+  .collectible {
+    position: absolute;
+    left: calc(50% - 70px);
+    top: 12px;
+    width: 140px;
+    height: 200px;
+    border: 1px solid hsl(var(--primary) / .24);
+    border-radius: 13px;
+    box-shadow: 0 10px 28px hsl(var(--primary) / .08);
+  }
+  .card-left, .card-right { display: grid; place-items: center; color: hsl(var(--primary) / .28); font-size: 36px; }
+  .card-left { transform: translate(-44px, 13px) rotate(-17deg); background: hsl(var(--primary) / .06); }
+  .card-right { transform: translate(44px, 13px) rotate(17deg); background: hsl(var(--muted)); }
+  .card-front {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    transform: rotate(-4deg);
+    color: hsl(var(--primary));
+    background: linear-gradient(155deg, hsl(var(--card)), hsl(var(--primary) / .08)), hsl(var(--card));
+  }
+  .card-front::before { content: ''; position: absolute; inset: 8px; border: 1px solid hsl(var(--primary) / .19); border-radius: 8px; }
+  .card-emblem { display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid hsl(var(--primary) / .22); border-radius: 50%; }
+  .card-emblem svg { width: 30px; height: 30px; }
+  .card-inscription { font-family: Georgia, serif; font-size: 12px; font-style: italic; letter-spacing: .03em; }
+  .card-corner { position: absolute; top: 14px; left: 17px; font-size: 16px; }
+  .corner-bottom { inset: auto 17px 14px auto; }
+  .floating-star { position: absolute; color: hsl(var(--primary) / .65); }
+  .star-left { top: 34px; left: 15px; font-size: 25px; }
+  .star-right { right: 10px; bottom: 24px; font-size: 17px; }
+  .empty-eyebrow { margin: 0 0 12px; color: hsl(var(--primary)); font-size: 9px; letter-spacing: .2em; }
+  h3 { margin: 0; color: hsl(var(--foreground)); font-size: clamp(17px, 3vw, 21px); font-weight: 600; line-height: 1.8; letter-spacing: .06em; }
+  .empty-description { margin: 10px 0 0; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.9; }
+  .empty-rule { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 25px; color: hsl(var(--primary) / .5); }
+  .empty-rule span { width: 44px; height: 1px; background: hsl(var(--primary) / .18); }
+  @media (max-width: 600px) {
+    .card-art-empty { padding: 28px 14px 24px; border-radius: 18px; }
+    .archive-heading { font-size: 10px; letter-spacing: .06em; }
+    .card-stack { transform: scale(.9); margin-bottom: 0; }
+  }
+</style>

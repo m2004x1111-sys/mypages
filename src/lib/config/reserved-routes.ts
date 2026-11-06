@@ -11,6 +11,7 @@ export const RESERVED_ROUTES = new Set([
   'travel',
   'gallery',
   'favorites',
+  'cards',
   'anime',
   'categories',
   'tags',

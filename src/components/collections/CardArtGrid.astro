@@ -1,0 +1,87 @@
+---
+import { getPhotoAssets } from '@lib/photo-assets';
+import { Icon } from 'astro-icon/components';
+import type { CardArtImage } from '@/data/card-art';
+import './card-art-gallery.css';
+
+interface Props {
+  images: readonly CardArtImage[];
+}
+const { images } = Astro.props;
+const categories = [...new Set(images.map((item) => item.category))];
+const photos = await Promise.all(
+  images.map(async (item) => ({
+    ...item,
+    front: await getPhotoAssets(item.image),
+    back: item.secondImage ? await getPhotoAssets(item.secondImage) : undefined,
+  })),
+);
+---
+
+<section class="card-gallery" data-card-gallery aria-label="好看的卡面">
+  <div class="card-gallery-tools">
+    <div class="card-filter-tabs" role="group" aria-label="按卡面作品筛选">
+      <button type="button" data-card-filter data-card-all aria-pressed="true">全部</button>
+      {categories.map((category) => <button type="button" data-card-filter={category} aria-pressed="false">{category}</button>)}
+    </div>
+    <p class="card-gallery-count" data-card-count aria-live="polite">{photos.length} 张卡面</p>
+  </div>
+  <p class="card-gallery-tip"><Icon name="ri:sparkling-line" aria-hidden="true" />=</p>
+  <div class="card-gallery-grid">
+    {photos.map((photo) => (
+      <figure
+        class="card-art-item"
+        data-card-item
+        data-category={photo.category}
+        data-face="front"
+        data-title={photo.title}
+        data-note={photo.note}
+        data-front-preview={photo.front.preview}
+        data-back-preview={photo.back?.preview}
+        data-front-source={photo.source || photo.image}
+        data-back-source={photo.source || photo.secondImage}
+        data-source-label={photo.sourceLabel || (photo.source ? '素材来源 ↗' : '查看原图 ↗')}
+      >
+        <div class="card-art-frame" style={`--card-art-ratio: ${photo.front.width} / ${photo.front.height}`}>
+          <button
+            type="button"
+            class:list={['card-art-image', { 'is-paired': !!photo.back }]}
+            data-card-toggle
+            aria-label={photo.back ? `${photo.title}：切换到第二张卡面` : `放大查看：${photo.title}`}
+            aria-pressed={photo.back ? 'false' : undefined}
+          >
+            <img data-card-front src={photo.front.thumbnail} alt={photo.title} width={photo.front.width} height={photo.front.height} loading="lazy" decoding="async" />
+            {photo.back && <img data-card-back src={photo.back.thumbnail} alt={`${photo.title} · 第二张`} width={photo.back.width} height={photo.back.height} loading="lazy" decoding="async" aria-hidden="true" />}
+            <span class="card-white-flash" data-card-flash aria-hidden="true"></span>
+            {photo.back && <span class="card-face-badge" aria-hidden="true"><Icon name="ri:sparkling-line" /><span data-card-face-label>01 / 02</span></span>}
+          </button>
+          <button type="button" class="card-zoom-button" data-card-zoom aria-label={`放大查看：${photo.title}`}><Icon name="ri:zoom-in-line" aria-hidden="true" /></button>
+        </div>
+        <figcaption><span>{photo.title}</span><small>{photo.category}</small></figcaption>
+      </figure>
+    ))}
+  </div>
+  <p class="card-gallery-status" data-card-status role="status"></p>
+  <dialog class="card-lightbox" data-card-dialog aria-labelledby="card-lightbox-title">
+    <div class="card-lightbox-bar"><span data-card-lightbox-count></span><button type="button" data-card-close aria-label="关闭卡面预览">✕</button></div>
+    <div class="card-lightbox-stage">
+      <button type="button" class="card-lightbox-arrow" data-card-previous aria-label="上一张卡面">‹</button>
+      <button type="button" class="card-lightbox-image" data-card-lightbox-toggle aria-label="切换卡面">
+        <img data-card-preview alt="" width="1200" height="800" />
+        <span class="card-white-flash" data-card-preview-flash aria-hidden="true"></span>
+      </button>
+      <button type="button" class="card-lightbox-arrow" data-card-next aria-label="下一张卡面">›</button>
+    </div>
+    <div class="card-lightbox-caption">
+      <div><h3 id="card-lightbox-title"></h3><p data-card-lightbox-note></p><span data-card-lightbox-hint></span></div>
+      <a data-card-lightbox-source target="_blank" rel="noopener noreferrer">查看原图 ↗</a>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  import { initCardArtGallery } from './card-art-gallery';
+  if (document.readyState !== 'loading') initCardArtGallery();
+  document.addEventListener('DOMContentLoaded', initCardArtGallery, { once: true });
+  document.addEventListener('astro:page-load', initCardArtGallery);
+</script>

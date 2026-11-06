@@ -351,7 +351,7 @@ export const uiStrings = {
   'notFound.description': '你访问的页面不存在',
   'notFound.backHome': '返回首页',
   'notFound.browseArchives': '浏览归档',
-  'notFound.message': '喵？页面被吃掉了~',
+  'notFound.message': '页面坏掉了。',
 
   // ── Category Stats ────────────────────────────────────────
   'category.subCategoryCount': '{count} 个子分类',

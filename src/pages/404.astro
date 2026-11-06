@@ -37,78 +37,11 @@ const DEBUG_CAT_STATE = false;
     <Cover slot="cover" title="404" />
     <HomeSider slot="sider" />
       <div class:list={['cat-404-container', { 'debug-paused': DEBUG_CAT_STATE }]}>
-        <svg class="cat-404" viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-             <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          <!-- Group for the whole composition -->
-          <g class="composition">
-            
-            <!-- THE '0' -> HEAD -->
-            <g class="head-group">
-               <!-- Background fill for the head -->
-               <ellipse class="digit-0-bg" cx="300" cy="200" rx="35" ry="70" />
-               <!-- The Outline (strokes) -->
-               <ellipse class="digit-0-outline" cx="300" cy="200" rx="35" ry="70" />
-            </g>
-
-            <!-- THE '4' (Left) -> LEFT EAR -->
-            <g class="digit-4 left-4">
-              <!-- Triangle part: Morphing path -->
-              <!-- Start: Standard 4 triangle (Right-angled) -->
-              <path class="ear-shape left-ear-path" d="M220,140 L160,220 Q190,220 220,220 Z" /> 
-              <!-- Vertical line (Stem) -->
-              <line class="stem" x1="220" y1="140" x2="220" y2="280" />
-            </g>
-
-            <!-- THE '4' (Right) -> RIGHT EAR -->
-            <g class="digit-4 right-4">
-              <!-- Triangle part: Morphing path -->
-              <!-- Start: Standard 4 triangle -->
-              <path class="ear-shape right-ear-path" d="M440,140 L380,220 Q410,220 440,220 Z" />
-              <!-- Vertical line (Stem) -->
-              <line class="stem" x1="440" y1="140" x2="440" y2="280" />
-            </g>
-
-            <!-- FACE FEATURES -->
-            <g class="face-features">
-
-              <!-- Eyes -->
-              <g class="eyes-group">
-                <ellipse class="eye" cx="260" cy="195" rx="9" ry="13" />
-                <circle class="eye-highlight" cx="264" cy="191" r="3" />
-
-                <ellipse class="eye" cx="340" cy="195" rx="9" ry="13" />
-                <circle class="eye-highlight" cx="344" cy="191" r="3" />
-              </g>
-
-              <!-- Nose (Soft Rounded Triangle) -->
-              <path class="nose" d="M292,218 Q300,215 308,218 L300,226 Z" />
-
-              <!-- Mouth (Simple Cute Curves, Disconnected) -->
-              <path class="mouth" d="M300,226 Q290,236 280,228" />
-              <path class="mouth" d="M300,226 Q310,236 320,228" />
-
-              <!-- Whiskers (Straight, fanning out) -->
-              <g class="whiskers">
-                <line x1="240" y1="215" x2="190" y2="205" />
-                <line x1="240" y1="225" x2="190" y2="225" />
-                <line x1="240" y1="235" x2="190" y2="245" />
-
-                <line x1="360" y1="215" x2="410" y2="205" />
-                <line x1="360" y1="225" x2="410" y2="225" />
-                <line x1="360" y1="235" x2="410" y2="245" />
-              </g>
-            </g>
-          </g>
-        </svg>
+        <img
+            src="/img/404/404.jpg"
+            alt="迷路啦"
+            style="width: 100%; max-width: 500px; height: auto;"
+          />
 
         <div class="message-container">
           <p class="fade-text" data-nf-text="message">{t(locale, 'notFound.message')}</p>

@@ -1,0 +1,13 @@
+---
+import CardArtShelf from '@components/collections/CardArtShelf.astro';
+import CollectionPage from '@components/collections/CollectionPage.astro';
+
+interface Props {
+  locale?: string;
+}
+const { locale } = Astro.props;
+---
+
+<CollectionPage title="好看的卡面" english="書きしろ" description="psjk" locale={locale}>
+  <CardArtShelf />
+</CollectionPage>

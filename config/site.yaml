@@ -134,9 +134,15 @@ navigation:
   - name: 旅行日志
     path: /travel
     icon: ri:compass-3-line
-  - name: 图片收藏
-    path: /gallery
+  - name: 收藏
     icon: ri:image-line
+    children:
+      - name: 好看的插画
+        path: /gallery
+        icon: ri:image-line
+      - name: 好看的卡面
+        path: /cards
+        icon: ri:sparkling-line
   - name: 喜欢的作品
     path: /favorites
     icon: ri:bookmark-3-line
